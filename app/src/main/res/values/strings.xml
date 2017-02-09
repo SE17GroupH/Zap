@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ZapApp</string>
+    <string-array name="register_authmodes">
+        <item>Fingerprint</item>
+        <item>Voice-DNA</item>
+        <item>Magic Link</item>
+    </string-array>
 </resources>
