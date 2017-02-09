@@ -10,12 +10,15 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp">
 
-        <Button
+
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Email"
+            android:textSize="@dimen/text_size"
             android:layout_weight="0"
-            android:id="@+id/button_register_email"/>
+            android:id="@+id/textview_register_email"/>
 
         <EditText
             android:layout_width="wrap_content"
@@ -33,12 +36,12 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp">
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Password"
             android:layout_weight="0"
-            android:id="@+id/button_register_password"/>
+            android:textSize="@dimen/text_size"/>
 
         <EditText
             android:layout_width="wrap_content"
@@ -57,12 +60,12 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp">
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Retype Password"
-            android:layout_weight="0"
-            android:id="@+id/button_register_retypepassword"/>
+            android:textSize="@dimen/text_size"
+            android:layout_weight="0"/>
 
         <EditText
             android:layout_width="wrap_content"
@@ -84,6 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:textSize="@dimen/text_size"
             android:text="Authentication\nMode"/>
 
         <Spinner
