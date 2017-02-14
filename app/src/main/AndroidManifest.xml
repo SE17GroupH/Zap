@@ -19,11 +19,15 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".FingerprintAuthActivity" />
         <activity android:name=".VoicednaAuthActivity" />
-        <activity android:name=".MagiclinkAuthActivity"></activity>
+        <activity android:name=".MagiclinkAuthActivity"/>
+        <activity android:name=".LoginFail"/>
+        <activity android:name=".LoginSuccess"/>
+
     </application>
     <uses-feature android:name="android.hardware.fingerprint"
         android:required="false"/>
     <uses-permission
         android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
