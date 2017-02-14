@@ -21,5 +21,9 @@
         <activity android:name=".VoicednaAuthActivity" />
         <activity android:name=".MagiclinkAuthActivity"></activity>
     </application>
+    <uses-feature android:name="android.hardware.fingerprint"
+        android:required="false"/>
+    <uses-permission
+        android:name="android.permission.USE_FINGERPRINT" />
 
 </manifest>

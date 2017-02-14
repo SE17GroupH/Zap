@@ -5,4 +5,7 @@
         <item>Voice-DNA</item>
         <item>Magic Link</item>
     </string-array>
+    <string name="instructions">
+    Place your fingertip on the Home button to verify your identity
+    </string>
 </resources>
