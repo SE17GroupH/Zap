@@ -1,5 +1,6 @@
 package teamh.zapapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -8,12 +9,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import org.apache.commons.io.IOUtils;
+
+import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -26,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     Button buttonLoginMagiclink;
 
     EditText et_username, et_passwd;
+    String result, username, passwd, json_data, zapserver_url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -34,7 +35,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         init();
     }
-
 
     public void init(){
 
@@ -49,67 +49,56 @@ public class LoginActivity extends AppCompatActivity {
         //set onclick listeners for the buttons
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
+            final Context context = getApplicationContext();
             @Override
             public void onClick(View view) {
                 //TODO Check if the user is registered to this method of auth
-                String username = et_username.getText().toString();
-                String passwd = et_passwd.getText().toString();
-
+                username = et_username.getText().toString();
+                passwd = et_passwd.getText().toString();
+                result = null;
                 //example@zapserver.com
                 //12345678
-
                 HttpURLConnection client = null;
-                String zapserver_url = "https://zapserver.herokuapp.com/api/sessions";
-                String json_data = String.format("{ \"session\": { \"email\": \"%s\", \"password\": \"%s\" } }",username, passwd);
+                zapserver_url = "https://zapserver.herokuapp.com/api/sessions";
+                json_data = String.format("{ \"session\": { \"email\": \"%s\", \"password\": \"%s\" } }",username, passwd);
                 Log.w("ZapApp", json_data);
-                String result = null;
+
 
                 try {
-                    client = (HttpURLConnection) ((new URL (zapserver_url).openConnection()));
+                    //SetAttributes
+                    client = (HttpURLConnection) ((new URL(zapserver_url).openConnection()));
                     client.setRequestMethod("POST");
                     client.setDoOutput(true);
                     client.setRequestProperty("Content-Type", "application/json");
                     client.setRequestProperty("Accept", "application/vnd.zapserver.v1");
-                    client.connect();
-                    Log.w("ZapApp", "Connected");
 
                     //Write
-                    OutputStream os = client.getOutputStream();
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                    writer.write(json_data);
-                    writer.close();
-                    os.flush();
-                    os.close();
-                    Log.w("ZapApp", "Data sent");
+                    DataOutputStream wr = new DataOutputStream(client.getOutputStream());
+                    wr.writeBytes(json_data);
+                    wr.flush();
+                    wr.close();
+
+                    //Connect
+                    client.connect();
 
                     //Read
-                    BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream(),"UTF-8"));
-                    String line = null;
-                    StringBuilder sb = new StringBuilder();
+                    int responseCode = client.getResponseCode();
 
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line);
+                    if(responseCode == HttpURLConnection.HTTP_OK){
+                        result = IOUtils.toString(client.getInputStream());
+                    } else {
+                        result = String.format("HTTP error: %s",responseCode);
                     }
-
-                    br.close();
-                    result = sb.toString();
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
                     if(client != null) // Make sure the connection is not null.
                         client.disconnect();
-                    Log.w("ZapApp", "disconnected");
                 }
 
-                if(result != null) {
-                    Log.w("ZapApp", result);
-                    startActivity(new Intent(LoginActivity.this, LoginSuccess.class));
-                } else {
-                    Log.w("ZapApp", "result empty");
-                    startActivity(new Intent(LoginActivity.this, LoginFail.class));
-                }
-
+                Toast.makeText(context, result,
+                        Toast.LENGTH_LONG).show();
 
             }
         });

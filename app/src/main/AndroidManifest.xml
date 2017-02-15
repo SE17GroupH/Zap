@@ -22,6 +22,7 @@
         <activity android:name=".MagiclinkAuthActivity"/>
         <activity android:name=".LoginFail"/>
         <activity android:name=".LoginSuccess"/>
+        <activity android:name=".RegisterSuccess"/>
 
     </application>
     <uses-feature android:name="android.hardware.fingerprint"
