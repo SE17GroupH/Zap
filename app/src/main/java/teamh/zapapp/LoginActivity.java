@@ -11,22 +11,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.apache.commons.io.IOUtils;
+import java.io.IOException;
 
-import java.io.DataOutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import okhttp3.OkHttpClient;
 
 public class LoginActivity extends AppCompatActivity {
-
     //layout variables
     Button buttonLogin;
     Button buttonLoginFingerprint;
     Button buttonLoginVoicedna;
     Button buttonLoginMagiclink;
-
     EditText et_username, et_passwd;
-    String result, username, passwd, json_data, zapserver_url;
+    //local variables
+    Context context;
+    final OkHttpClient client = new OkHttpClient();
+    String result, username, passwd, json_data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void init(){
-
+        context = getApplicationContext();
         et_username = (EditText) findViewById(R.id.edittext_login_email);
         et_passwd = (EditText) findViewById(R.id.edittext_password);
 
@@ -47,59 +47,20 @@ public class LoginActivity extends AppCompatActivity {
         buttonLoginMagiclink = (Button) findViewById(R.id.button_login_magiclink);
 
         //set onclick listeners for the buttons
-
         buttonLogin.setOnClickListener(new View.OnClickListener() {
-            final Context context = getApplicationContext();
             @Override
             public void onClick(View view) {
-                //TODO Check if the user is registered to this method of auth
                 username = et_username.getText().toString();
                 passwd = et_passwd.getText().toString();
-                result = null;
-                //example@zapserver.com
-                //12345678
-                HttpURLConnection client = null;
-                zapserver_url = "https://zapserver.herokuapp.com/api/sessions";
                 json_data = String.format("{ \"session\": { \"email\": \"%s\", \"password\": \"%s\" } }",username, passwd);
-                Log.w("ZapApp", json_data);
-
 
                 try {
-                    //SetAttributes
-                    client = (HttpURLConnection) ((new URL(zapserver_url).openConnection()));
-                    client.setRequestMethod("POST");
-                    client.setDoOutput(true);
-                    client.setRequestProperty("Content-Type", "application/json");
-                    client.setRequestProperty("Accept", "application/vnd.zapserver.v1");
+                    result = ZapApiHelper.post_zap(client, ZapApiHelper.zaplogin_url, json_data);
+                    Toast.makeText(context, result, Toast.LENGTH_LONG).show();
 
-                    //Write
-                    DataOutputStream wr = new DataOutputStream(client.getOutputStream());
-                    wr.writeBytes(json_data);
-                    wr.flush();
-                    wr.close();
-
-                    //Connect
-                    client.connect();
-
-                    //Read
-                    int responseCode = client.getResponseCode();
-
-                    if(responseCode == HttpURLConnection.HTTP_OK){
-                        result = IOUtils.toString(client.getInputStream());
-                    } else {
-                        result = String.format("HTTP error: %s",responseCode);
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if(client != null) // Make sure the connection is not null.
-                        client.disconnect();
+                } catch (IOException e) {
+                    Log.w("ZapApp","IOException");
                 }
-
-                Toast.makeText(context, result,
-                        Toast.LENGTH_LONG).show();
-
             }
         });
 
@@ -130,6 +91,5 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(magiclinkAuthIntent);
             }
         });
-
     }
 }
