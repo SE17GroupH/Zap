@@ -1,6 +1,7 @@
 package teamh.zapapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -76,6 +77,8 @@ public class RegisterActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             LoginResponse login = gson.fromJson(response.body().charStream(), LoginResponse.class);
                             Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
+                            Intent profileIntent = new Intent(RegisterActivity.this, ProfileActivity.class);
+                            startActivity(profileIntent);
                         } else {
                             RegisterError login = gson.fromJson(response.body().charStream(), RegisterError.class);
                             Toast.makeText(context, String.format("Failed: Email %s", login.errors.get("email")), Toast.LENGTH_LONG).show();

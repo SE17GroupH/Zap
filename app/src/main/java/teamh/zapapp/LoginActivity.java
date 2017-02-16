@@ -64,6 +64,8 @@ public class LoginActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         LoginResponse login = gson.fromJson(response.body().charStream(), LoginResponse.class);
                         Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
+                        Intent profileIntent = new Intent(LoginActivity.this, ProfileActivity.class);
+                        startActivity(profileIntent);
                     } else {
                         LoginError login = gson.fromJson(response.body().charStream(), LoginError.class);
                         Toast.makeText(context, String.format("Failed: %s", login.errors), Toast.LENGTH_LONG).show();

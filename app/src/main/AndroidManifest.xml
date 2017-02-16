@@ -20,9 +20,7 @@
         <activity android:name=".FingerprintAuthActivity" />
         <activity android:name=".VoicednaAuthActivity" />
         <activity android:name=".MagiclinkAuthActivity"/>
-        <activity android:name=".LoginFail"/>
-        <activity android:name=".LoginSuccess"/>
-        <activity android:name=".RegisterSuccess"/>
+        <activity android:name=".ProfileActivity"/>
 
     </application>
     <uses-feature android:name="android.hardware.fingerprint"
