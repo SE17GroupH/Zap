@@ -2,6 +2,7 @@ package teamh.zapapp;
 
 import android.Manifest;
 import android.app.KeyguardManager;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
@@ -11,6 +12,7 @@ import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -28,7 +30,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
-public class FingerprintAuthActivity extends AppCompatActivity {
+public class FingerprintAuthActivity extends AppCompatActivity implements FingerprintHandler.Callback{
     private static final String KEY_NAME = "yourKey";
     private Cipher cipher;
     private KeyStore keyStore;
@@ -88,7 +90,7 @@ public class FingerprintAuthActivity extends AppCompatActivity {
 
                     // Here, I’m referencing the FingerprintHandler class that we’ll create in the next section. This class will be responsible
                     // for starting the authentication process (via the startAuth method) and processing the authentication process events//
-                    FingerprintHandler helper = new FingerprintHandler(this);
+                    FingerprintHandler helper = new FingerprintHandler(this,this, (ImageView) findViewById(R.id.fingerprint_icon));
                     helper.startAuth(fingerprintManager, cryptoObject);
                 }
             }
@@ -174,6 +176,14 @@ public class FingerprintAuthActivity extends AppCompatActivity {
         public FingerprintException(Exception e) {
             super(e);
         }
+    }
+
+    @Override
+    public void onAuthenticated() {
+        // Callback from FingerprintUiHelper. Let the activity know that authentication was
+        // successful.
+        Intent profileIntent = new Intent(FingerprintAuthActivity.this, ProfileActivity.class);
+        startActivity(profileIntent);
     }
 
 }

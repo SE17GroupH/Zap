@@ -83,19 +83,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:textSize="@dimen/text_size"
-            android:text="Authentication\nMode"/>
-
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/spinner_register_authmode" />
-
     </LinearLayout>
 
 
@@ -109,14 +96,7 @@
             android:layout_height="match_parent"
             android:text="Register"
             android:layout_weight="1"
-            android:id="@+id/button_register_register"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Go back"
-            android:layout_weight="1"
-            android:id="@+id/button_register_goback"/>
+            android:id="@+id/register"/>
 
     </LinearLayout>
 
