@@ -11,9 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
 
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
     //layout variables
@@ -23,9 +26,11 @@ public class LoginActivity extends AppCompatActivity {
     Button buttonLoginMagiclink;
     EditText et_username, et_passwd;
     //local variables
-    Context context;
-    final OkHttpClient client = new OkHttpClient();
-    String result, username, passwd, json_data;
+    private Context context;
+    private final OkHttpClient client = new OkHttpClient();
+    private final Gson gson = new Gson();
+    private String username, passwd, json_request, json_response;
+    private Response response;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +57,17 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 username = et_username.getText().toString();
                 passwd = et_passwd.getText().toString();
-                json_data = String.format("{ \"session\": { \"email\": \"%s\", \"password\": \"%s\" } }",username, passwd);
+                json_request = String.format("{ \"session\": { \"email\": \"%s\", \"password\": \"%s\" } }",username, passwd);
 
                 try {
-                    result = ZapApiHelper.post_zap(client, ZapApiHelper.zaplogin_url, json_data);
-                    Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+                    response = ZapApiHelper.post_zap(client, ZapApiHelper.zaplogin_url, json_request);
+                    if (response.isSuccessful()) {
+                        LoginResponse login = gson.fromJson(response.body().charStream(), LoginResponse.class);
+                        Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
+                    } else {
+                        LoginError login = gson.fromJson(response.body().charStream(), LoginError.class);
+                        Toast.makeText(context, String.format("Failed: %s", login.errors), Toast.LENGTH_LONG).show();
+                    }
 
                 } catch (IOException e) {
                     Log.w("ZapApp","IOException");
@@ -93,3 +104,5 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 }
+
+

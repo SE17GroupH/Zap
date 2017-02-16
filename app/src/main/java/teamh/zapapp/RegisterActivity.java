@@ -12,9 +12,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
 
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -24,9 +27,11 @@ public class RegisterActivity extends AppCompatActivity {
     EditText et_email, et_passwd, et_rpasswd;
     Spinner spinnerAuthmodes;
     //local variables
-    Context context;
-    final OkHttpClient client = new OkHttpClient();
-    String email, passwd, rpasswd, result, json_data;
+    private Context context;
+    private final OkHttpClient client = new OkHttpClient();
+    private String email, passwd, rpasswd, result, json_response, json_request;
+    private Response response;
+    private final Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +70,16 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(context, "Passwords do not match!",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    json_data = String.format("{ \"user\": { \"email\": \"%s\", \"password\": \"%s\", \"password_confirmation\": \"%s\" } }",email, passwd, rpasswd);
+                    json_request = String.format("{ \"user\": { \"email\": \"%s\", \"password\": \"%s\", \"password_confirmation\": \"%s\" } }",email, passwd, rpasswd);
                     try {
-                        result = ZapApiHelper.post_zap(client, ZapApiHelper.zapregister_url, json_data);
-                        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+                        response = ZapApiHelper.post_zap(client, ZapApiHelper.zapregister_url, json_request);
+                        if (response.isSuccessful()) {
+                            LoginResponse login = gson.fromJson(response.body().charStream(), LoginResponse.class);
+                            Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
+                        } else {
+                            RegisterError login = gson.fromJson(response.body().charStream(), RegisterError.class);
+                            Toast.makeText(context, String.format("Failed: Email %s", login.errors.get("email")), Toast.LENGTH_LONG).show();
+                        }
 
                     } catch (IOException e) {
                         Log.w("ZapApp","IOException");
