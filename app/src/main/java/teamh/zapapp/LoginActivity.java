@@ -2,6 +2,7 @@ package teamh.zapapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,8 @@ import java.io.IOException;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
+import static teamh.zapapp.ZapHelper.PREFS_NAME;
+
 public class LoginActivity extends AppCompatActivity {
     //layout variables
     Button buttonLogin;
@@ -31,6 +34,10 @@ public class LoginActivity extends AppCompatActivity {
     private final Gson gson = new Gson();
     private String username, passwd, json_request, json_response;
     private Response response;
+    private LoginResponse login;
+    private LoginError logine;
+    private SharedPreferences settings;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         init();
+    }
+
+    protected void save(){
+        settings = getSharedPreferences(PREFS_NAME, 0);
+        editor = settings.edit();
+        editor.putBoolean("loggedin", true);
+        editor.putString("auth_token", login.auth_token);
+        // Commit the edits!
+        editor.commit();
     }
 
     public void init(){
@@ -59,16 +75,26 @@ public class LoginActivity extends AppCompatActivity {
                 passwd = et_passwd.getText().toString();
                 json_request = String.format("{ \"session\": { \"email\": \"%s\", \"password\": \"%s\" } }",username, passwd);
 
+                if(passwd.length() < 6){
+                    Toast.makeText(context, "Password too small!", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (!username.contains("@")) {
+                    Toast.makeText(context, "Invalid Email!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 try {
-                    response = ZapApiHelper.post_zap(client, ZapApiHelper.zaplogin_url, json_request);
+                    response = ZapHelper.post_zap(client, ZapHelper.zaplogin_url, json_request);
                     if (response.isSuccessful()) {
-                        LoginResponse login = gson.fromJson(response.body().charStream(), LoginResponse.class);
+                        login = gson.fromJson(response.body().charStream(), LoginResponse.class);
                         Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
+                        save();
+
                         Intent profileIntent = new Intent(LoginActivity.this, ProfileActivity.class);
                         startActivity(profileIntent);
                     } else {
-                        LoginError login = gson.fromJson(response.body().charStream(), LoginError.class);
-                        Toast.makeText(context, String.format("Failed: %s", login.errors), Toast.LENGTH_LONG).show();
+                        logine = gson.fromJson(response.body().charStream(), LoginError.class);
+                        Toast.makeText(context, String.format("Failed: %s", logine.errors), Toast.LENGTH_LONG).show();
                     }
 
                 } catch (IOException e) {

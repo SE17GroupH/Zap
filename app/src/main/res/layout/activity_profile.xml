@@ -13,5 +13,5 @@
         android:text="Logout"
         android:layout_width="194dp"
         android:layout_height="wrap_content"
-        android:id="@+id/button" />
+        android:id="@+id/btn_logout" />
 </LinearLayout>

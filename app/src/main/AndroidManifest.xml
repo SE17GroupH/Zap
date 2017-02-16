@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HompageActivity">
+        <activity android:name=".LandingPage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,6 +21,8 @@
         <activity android:name=".VoicednaAuthActivity" />
         <activity android:name=".MagiclinkAuthActivity"/>
         <activity android:name=".ProfileActivity"/>
+        <activity android:name=".HompageActivity"/>
+
 
     </application>
     <uses-feature android:name="android.hardware.fingerprint"

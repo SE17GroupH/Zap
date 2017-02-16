@@ -13,7 +13,11 @@ import okhttp3.Response;
  * Created by sid on 2/15/17.
  */
 
-public class ZapApiHelper {
+
+
+public class ZapHelper {
+    public static final String PREFS_NAME = "MyPrefsFile";
+
     final static String zaplogin_url = "https://zapserver.herokuapp.com/api/sessions";
     final static String zapregister_url = "https://zapserver.herokuapp.com/api/users";
     public final static MediaType JSON = MediaType.parse("application/json; charset=utf-8");
@@ -30,7 +34,6 @@ public class ZapApiHelper {
         return response;
     }
 }
-
 
 class LoginResponse {
     public int id;
