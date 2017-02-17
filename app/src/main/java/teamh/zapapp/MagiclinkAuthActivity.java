@@ -15,10 +15,21 @@ public class MagiclinkAuthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_magiclink_auth);
         //test code
         TextView info = (TextView) findViewById(R.id.textview_magiclink_info);
+
         Intent intent = getIntent();
         String action = intent.getAction();
+
         Uri data = intent.getData();
-        info.setText(data.toString());
+        if(data != null){
+            info.setText(data.toString());
+        }
+
+
+
+
+
+
+
 
     }
 }

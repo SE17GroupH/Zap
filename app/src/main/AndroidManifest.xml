@@ -24,7 +24,6 @@
             <!-- Auto generated stub. Tutorial at: https://g.co/AppIndexing/AndroidStudio  -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Auto generated stub. HTTP scheme is recommended.
