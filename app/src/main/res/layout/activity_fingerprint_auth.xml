@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_fingerprint_black_24dp"
-        android:id="@+id/imageView"
+        android:id="@+id/fingerprint_icon"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="36dp" />
 

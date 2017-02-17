@@ -12,6 +12,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.support.v4.app.ActivityCompat;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 @TargetApi(Build.VERSION_CODES.M)
@@ -22,9 +23,14 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
 
     private CancellationSignal cancellationSignal;
     private Context context;
+    private final Callback mCallback;
+    private final ImageView mIcon;
+    private static final long SUCCESS_DELAY_MILLIS = 1300;
 
-    public FingerprintHandler(Context mContext) {
+    public FingerprintHandler(Context mContext, Callback callback, ImageView icon) {
+        mCallback = callback;
         context = mContext;
+        mIcon = icon;
     }
 
     //Implement the startAuth method, which is responsible for starting the fingerprint authentication process//
@@ -70,6 +76,18 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
             FingerprintManager.AuthenticationResult result) {
 
         Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
+        mIcon.setImageResource(R.drawable.ic_fingerprint_success);
+        mIcon.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mCallback.onAuthenticated();
+            }
+        }, SUCCESS_DELAY_MILLIS);
+    }
+
+    public interface Callback {
+
+        void onAuthenticated();
     }
 
 }
