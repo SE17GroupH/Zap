@@ -6,11 +6,26 @@
     android:layout_gravity="center_vertical">
 
 
-    <TextView
+
+    <Button
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:textSize="24dp"
+        android:layout_height="wrap_content"
+        android:text="Audio Sample 1"
         android:layout_gravity="center_horizontal"
-        android:text="Do Voice-DNA Auth here"/>
+        android:id="@+id/button_record1_voicedna"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Audio Sample 2"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/button_record2_voicedna"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Audio Sample 3"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/button_record3_voicedna"/>
 
 </LinearLayout>
