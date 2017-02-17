@@ -40,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private Intent profileIntent;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -54,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("auth_token", login.auth_token);
         editor.putString("email", email);
         editor.putString("password", passwd);
+        editor.putBoolean("isUserVoiceRegistered", false);
         editor.commit();
     }
 
@@ -117,9 +119,19 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //TODO Check if the user is registered to this method of auth
+                //TODO Check if user is registered via voice or not
+                boolean isUserVoiceRegistered = settings.getBoolean("isUserVoiceRegistered", false);
+                if(!isUserVoiceRegistered){
+                    //For instances where the user hasn't yet registered with voice
+                    Intent voicednaAuthIntent = new Intent(LoginActivity.this, VoicednaAuthActivity.class);
+                    startActivity(voicednaAuthIntent);
+                }
+                else{
+                    //For instances when the user has already registered with voice
+                    Intent voiceLoginIntent = new Intent(LoginActivity.this, VoiceLoginActivity.class);
+                    startActivity(voiceLoginIntent);
+                }
 
-                Intent voicednaAuthIntent = new Intent(LoginActivity.this, VoicednaAuthActivity.class);
-                startActivity(voicednaAuthIntent);
             }
         });
         buttonLoginMagiclink.setOnClickListener(new View.OnClickListener() {
