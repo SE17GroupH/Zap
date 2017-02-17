@@ -27,17 +27,18 @@ public class LoginActivity extends AppCompatActivity {
     Button buttonLoginFingerprint;
     Button buttonLoginVoicedna;
     Button buttonLoginMagiclink;
-    EditText et_username, et_passwd;
+    EditText et_email, et_passwd;
     //local variables
     private Context context;
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
-    private String username, passwd, json_request, json_response;
+    private String email, passwd, json_request;
     private Response response;
     private LoginResponse login;
     private LoginError logine;
     private SharedPreferences settings;
     private SharedPreferences.Editor editor;
+    private Intent profileIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +50,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     protected void save(){
-        settings = getSharedPreferences(PREFS_NAME, 0);
-        editor = settings.edit();
         editor.putBoolean("loggedin", true);
         editor.putString("auth_token", login.auth_token);
-        // Commit the edits!
+        editor.putString("email", email);
+        editor.putString("password", passwd);
         editor.commit();
     }
 
     public void init(){
+        profileIntent = new Intent(LoginActivity.this, ProfileActivity.class);
         context = getApplicationContext();
-        et_username = (EditText) findViewById(R.id.edittext_login_email);
+        settings = getSharedPreferences(PREFS_NAME, 0);
+        editor = settings.edit();
+        et_email = (EditText) findViewById(R.id.edittext_login_email);
         et_passwd = (EditText) findViewById(R.id.edittext_password);
 
         buttonLogin = (Button) findViewById(R.id.button_login);
@@ -71,15 +74,15 @@ public class LoginActivity extends AppCompatActivity {
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                username = et_username.getText().toString();
+                email = et_email.getText().toString();
                 passwd = et_passwd.getText().toString();
-                json_request = String.format("{ \"session\": { \"email\": \"%s\", \"password\": \"%s\" } }",username, passwd);
+                json_request = String.format("{ \"session\": { \"email\": \"%s\", \"password\": \"%s\" } }",email, passwd);
 
-                if(passwd.length() < 6){
-                    Toast.makeText(context, "Password too small!", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (!username.contains("@")) {
+                if (!email.contains("@")) {
                     Toast.makeText(context, "Invalid Email!", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if(passwd.length() < 6){
+                    Toast.makeText(context, "Password too small!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -87,10 +90,8 @@ public class LoginActivity extends AppCompatActivity {
                     response = ZapHelper.post_zap(client, ZapHelper.zaplogin_url, json_request);
                     if (response.isSuccessful()) {
                         login = gson.fromJson(response.body().charStream(), LoginResponse.class);
-                        Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show();
                         save();
-
-                        Intent profileIntent = new Intent(LoginActivity.this, ProfileActivity.class);
                         startActivity(profileIntent);
                     } else {
                         logine = gson.fromJson(response.body().charStream(), LoginError.class);

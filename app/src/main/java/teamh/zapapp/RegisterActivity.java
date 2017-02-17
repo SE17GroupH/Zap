@@ -2,7 +2,6 @@ package teamh.zapapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -28,13 +27,12 @@ public class RegisterActivity extends AppCompatActivity {
     //local variables
     private Context context;
     private final OkHttpClient client = new OkHttpClient();
-    private String email, passwd, rpasswd, result, json_response, json_request;
+    private String email, passwd, rpasswd,json_request;
     private Response response;
     private final Gson gson = new Gson();
-    private LoginResponse login;
     private RegisterError logine;
-    private SharedPreferences settings;
-    private SharedPreferences.Editor editor;
+    private Intent loginIntent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void init(){
         context = getApplicationContext();
+        loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
 
         bt_Register = (Button) findViewById(R.id.register);
         et_email = (EditText) findViewById(R.id.edittext_register_email);
@@ -60,15 +59,12 @@ public class RegisterActivity extends AppCompatActivity {
                 passwd = et_passwd.getText().toString();
                 rpasswd = et_rpasswd.getText().toString();
 
-                if(email == null || email.trim().equals("")){
-                    Toast.makeText(context, "Email field empty!",
-                            Toast.LENGTH_LONG).show();
-                } else if(passwd == null || passwd.trim().equals("")){
-                    Toast.makeText(context, "Invalid password",
-                            Toast.LENGTH_LONG).show();
-                } else if(rpasswd == null || rpasswd.trim().equals("")){
-                    Toast.makeText(context, "Repeat passwords!",
-                            Toast.LENGTH_LONG).show();
+                if (!email.contains("@")) {
+                    Toast.makeText(context, "Invalid Email!", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if(passwd.length() < 6){
+                    Toast.makeText(context, "Password too small!", Toast.LENGTH_SHORT).show();
+                    return;
                 } else if(!passwd.equals(rpasswd)){
                     Toast.makeText(context, "Passwords do not match!",
                             Toast.LENGTH_LONG).show();
@@ -77,10 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
                     try {
                         response = ZapHelper.post_zap(client, ZapHelper.zapregister_url, json_request);
                         if (response.isSuccessful()) {
-                            login = gson.fromJson(response.body().charStream(), LoginResponse.class);
                             Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
-
-                            Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(loginIntent);
                         } else {
                             logine = gson.fromJson(response.body().charStream(), RegisterError.class);

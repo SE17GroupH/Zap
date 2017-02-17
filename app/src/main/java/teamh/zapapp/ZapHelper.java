@@ -16,21 +16,39 @@ import okhttp3.Response;
 
 
 public class ZapHelper {
-    public static final String PREFS_NAME = "MyPrefsFile";
+    private static RequestBody body;
+    private static Request request;
+    private static Response response;
 
+    public static final String PREFS_NAME = "MyPrefsFile";
+    final static String zaplogout_url = "https://zapserver.herokuapp.com/api/sessions/%s";
     final static String zaplogin_url = "https://zapserver.herokuapp.com/api/sessions";
     final static String zapregister_url = "https://zapserver.herokuapp.com/api/users";
+
     public final static MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
     public static Response post_zap(OkHttpClient client, String a_url, String json) throws IOException {
-        RequestBody body = RequestBody.create(JSON, json);
-        Request request = new Request.Builder()
+        body = RequestBody.create(JSON, json);
+        request = new Request.Builder()
                 .url(a_url)
                 .addHeader("Accept", "application/vnd.zapserver.v1")
                 .addHeader("Content-Type", "application/json")
                 .post(body)
                 .build();
 
-        Response response = client.newCall(request).execute();
+        response = client.newCall(request).execute();
+        return response;
+    }
+
+    public static Response delete_zap(OkHttpClient client, String a_url) throws IOException {
+        request = new Request.Builder()
+                .url(a_url)
+                .addHeader("Accept", "application/vnd.zapserver.v1")
+                .addHeader("Content-Type", "application/json")
+                .delete()
+                .build();
+
+        response = client.newCall(request).execute();
         return response;
     }
 }
