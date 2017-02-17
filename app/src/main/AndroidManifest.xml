@@ -15,15 +15,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".RegisterActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".FingerprintAuthActivity" />
         <activity android:name=".VoicednaAuthActivity" />
-        <activity android:name=".MagiclinkAuthActivity"/>
+        <activity android:name=".MagiclinkAuthActivity">
+            <!-- Auto generated stub. Tutorial at: https://g.co/AppIndexing/AndroidStudio  -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Auto generated stub. HTTP scheme is recommended.
+                  TODO: Change the host or pathPrefix as necessary. -->
+                <data
+                    android:host="www.zapapp.com"
+                    android:pathPrefix="/magiclinkauth"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ProfileActivity"/>
         <activity android:name=".HompageActivity"/>
-
-
     </application>
     <uses-feature android:name="android.hardware.fingerprint"
         android:required="false"/>
