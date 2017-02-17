@@ -23,7 +23,7 @@ public class VoicednaAuthActivity extends AppCompatActivity {
 
         context = getApplicationContext();
 
-        client = new SpeakerVerificationRestClient(ZapHelper.sub_key1);
+        client = new SpeakerVerificationRestClient(SubKeys.sub_key1);
         try {
             CreateProfileResponse profile = client.createProfile("en-us");
             Toast.makeText(context, profile.toString(), Toast.LENGTH_LONG).show();
