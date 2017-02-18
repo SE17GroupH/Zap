@@ -10,47 +10,12 @@
         android:layout_height="wrap_content"
         android:text="Record Sample 1"
         android:layout_gravity="center_horizontal"
-        android:id="@+id/btn_record1"/>
-
-    <TextView
-        android:text="Waiting.."
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_status1"
-        android:textAlignment="center" />
+        android:id="@+id/btn_record"/>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Record Sample 2"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/btn_record2"/>
-
-    <TextView
-        android:text="Waiting.."
+        android:text="Enroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_status2"
-        android:textAlignment="center" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Record Sample 3"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/btn_record3"/>
-
-    <TextView
-        android:text="Waiting.."
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:id="@+id/tv_status3" />
-
-    <Button
-        android:text="Register"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_register" />
+        android:id="@+id/btn_enroll" />
 
 </LinearLayout>

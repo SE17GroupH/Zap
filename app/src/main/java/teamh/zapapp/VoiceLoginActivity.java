@@ -47,6 +47,7 @@ public class VoiceLoginActivity extends AppCompatActivity {
     private SpeakerVerificationRestClient client;
     private Verification verify;
     private FileInputStream audio_file;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +96,15 @@ public class VoiceLoginActivity extends AppCompatActivity {
                 try {
                     audio_file = new FileInputStream(new File(filepath));
                     try {
-
                         verify = client.verify(audio_file, UUID.fromString(settings.getString("voice_profileid","")));
+                        Toast.makeText(context, verify.result.toString() + " " + verify.confidence.toString(), Toast.LENGTH_LONG).show();
+                        if (verify.result.toString() == "ACCEPT") {
+                            intent = new Intent(VoiceLoginActivity.this, ProfileActivity.class);
+                            startActivity(intent);
+                        }
                     } catch (VerificationException | IOException e) {
                         e.printStackTrace();
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -110,9 +116,7 @@ public class VoiceLoginActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                 }
-
-                Toast.makeText(context, verify.result.toString() + " " + verify.confidence.toString(), Toast.LENGTH_SHORT).show();
-
+                recorded = false;
             }
         });
 
