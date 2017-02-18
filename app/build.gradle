@@ -17,6 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
 }
 
 repositories {
@@ -31,6 +34,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    compile 'com.microsoft.cognitive:speakerrecognition:1.0.0'
     compile 'com.github.adrielcafe:AndroidAudioRecorder:0.2.0'
     compile 'com.android.support:appcompat-v7:25.1.1'
     compile 'com.google.code.gson:gson:2.8.0'

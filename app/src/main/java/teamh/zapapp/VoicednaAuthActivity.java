@@ -1,6 +1,7 @@
 package teamh.zapapp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -10,6 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.microsoft.cognitive.speakerrecognition.SpeakerVerificationRestClient;
+import com.microsoft.cognitive.speakerrecognition.contract.CreateProfileException;
+import com.microsoft.cognitive.speakerrecognition.contract.verification.CreateProfileResponse;
+
+import java.io.IOException;
 
 import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
 import cafe.adriel.androidaudiorecorder.model.AudioChannel;
@@ -23,18 +30,29 @@ public class VoicednaAuthActivity extends AppCompatActivity {
     private boolean permissionToRecordAccepted = false;
     private boolean permissionToStoreAccepted = false;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private String filepath1;
-    private String filepath2;
-    private String filepath3;
+    //local variables
+    private String filepath1, filepath2, filepath3;
+    private Context context;
+    private SpeakerVerificationRestClient client;
+    private Button record1, record2, record3, register;
+    private CreateProfileResponse profile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voicedna_auth);
+
+        context = getApplicationContext();
+        client = new SpeakerVerificationRestClient(SubKey.sub_key1);
+        record1 = (Button) findViewById(R.id.btn_record1);
+        record3 = (Button) findViewById(R.id.btn_record2);
+        record2 = (Button) findViewById(R.id.btn_record3);
+        register = (Button) findViewById(R.id.btn_register);
+
         //request permissions
         ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS);
-        Toast.makeText(this,"Hello", Toast.LENGTH_SHORT).show();
 
-        Button record1 = (Button) findViewById(R.id.button_record1_voicedna);
+
         record1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,11 +77,10 @@ public class VoicednaAuthActivity extends AppCompatActivity {
             }
         });
 
-        Button record2 = (Button) findViewById(R.id.button_record2_voicedna);
+
         record2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //String filePath = Environment.getExternalStorageDirectory() + "/audioSample2.wav";
                 filepath2 = getFilesDir().getAbsolutePath() + "/audioSample2.wav";
                 int color = getResources().getColor(R.color.colorPrimaryDark);
                 int requestCode = 0;
@@ -84,7 +101,7 @@ public class VoicednaAuthActivity extends AppCompatActivity {
             }
         });
 
-        Button record3 = (Button) findViewById(R.id.button_record3_voicedna);
+
         record3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,7 +126,17 @@ public class VoicednaAuthActivity extends AppCompatActivity {
             }
         });
 
-
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    profile = client.createProfile("en-us");
+                    Toast.makeText(context, profile.verificationProfileId.toString(), Toast.LENGTH_LONG).show();
+                } catch (IOException | CreateProfileException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 
@@ -138,5 +165,6 @@ public class VoicednaAuthActivity extends AppCompatActivity {
                 // Oops! User has canceled the recording
             }
         }
+
     }
 }
