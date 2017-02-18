@@ -2,6 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="teamh.zapapp">
 
+    <uses-feature
+        android:name="android.hardware.fingerprint"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    //voice recording stuff
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,36 +26,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".RegisterActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".FingerprintAuthActivity" />
         <activity android:name=".VoicednaAuthActivity" />
         <activity android:name=".MagiclinkAuthActivity">
-            <!-- Auto generated stub. Tutorial at: https://g.co/AppIndexing/AndroidStudio  -->
+
+            <!-- Auto generated stub. Tutorial at: https://g.co/AppIndexing/AndroidStudio -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- Auto generated stub. HTTP scheme is recommended.
-                  TODO: Change the host or pathPrefix as necessary. -->
+                <!--
+                  Auto generated stub. HTTP scheme is recommended.
+                  TODO: Change the host or pathPrefix as necessary.
+                -->
                 <data
                     android:host="www.zapapp.com"
                     android:pathPrefix="/magiclinkauth"
                     android:scheme="http" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProfileActivity"/>
-        <activity android:name=".HompageActivity"/>
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".HompageActivity" />
+        <activity android:name=".VoiceLoginActivity"></activity>
     </application>
-    <uses-feature android:name="android.hardware.fingerprint"
-        android:required="false"/>
-    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    //voice recording stuff
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
 
 </manifest>
