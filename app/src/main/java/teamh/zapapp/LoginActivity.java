@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                         save();
                         startActivity(intent);
                     } else if (response.code()==401){
-                        logine = gson.fromJson(response.body().charStream(), LoginError.class);
+                        loginm = gson.fromJson(response.body().charStream(), EmailError.class);
                         Toast.makeText(context, String.format("Failed: %s", loginm.error), Toast.LENGTH_LONG).show();
                     } else {
                         logine = gson.fromJson(response.body().charStream(), LoginError.class);
