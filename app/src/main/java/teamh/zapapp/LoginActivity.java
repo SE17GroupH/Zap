@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     private LoginError logine;
     private SharedPreferences settings;
     private SharedPreferences.Editor editor;
-    private Intent profileIntent;
+    private Intent intent;
 
 
     @Override
@@ -55,12 +55,12 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("auth_token", login.auth_token);
         editor.putString("email", email);
         editor.putString("password", passwd);
-        editor.putBoolean("isUserVoiceRegistered", false);
+        editor.putBoolean("registered", true);
         editor.commit();
     }
 
     public void init(){
-        profileIntent = new Intent(LoginActivity.this, ProfileActivity.class);
+        intent = new Intent(LoginActivity.this, ProfileActivity.class);
         context = getApplicationContext();
         settings = getSharedPreferences(PREFS_NAME, 0);
         editor = settings.edit();
@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                         login = gson.fromJson(response.body().charStream(), LoginResponse.class);
                         Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show();
                         save();
-                        startActivity(profileIntent);
+                        startActivity(intent);
                     } else {
                         logine = gson.fromJson(response.body().charStream(), LoginError.class);
                         Toast.makeText(context, String.format("Failed: %s", logine.errors), Toast.LENGTH_LONG).show();
@@ -110,9 +110,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //TODO Check if the user is registered to this method of auth
+                if (!settings.getBoolean("registered", false)){
+                    //When user hasn't registered for an account
+                    Toast.makeText(context, "Login with your password the first time!", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    intent = new Intent(LoginActivity.this, FingerprintAuthActivity.class);
+                    startActivity(intent);
+                }
 
-                Intent fingerprintAuthIntent = new Intent(LoginActivity.this, FingerprintAuthActivity.class);
-                startActivity(fingerprintAuthIntent);
             }
         });
         buttonLoginVoicedna.setOnClickListener(new View.OnClickListener() {
@@ -120,16 +126,19 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //TODO Check if the user is registered to this method of auth
                 //TODO Check if user is registered via voice or not
-                boolean isUserVoiceRegistered = settings.getBoolean("isUserVoiceRegistered", false);
-                if(!isUserVoiceRegistered){
-                    //For instances where the user hasn't yet registered with voice
-                    Intent voicednaAuthIntent = new Intent(LoginActivity.this, VoicednaAuthActivity.class);
-                    startActivity(voicednaAuthIntent);
+                if (!settings.getBoolean("registered", false)){
+                    //When user hasn't registered for an account
+                    Toast.makeText(context, "Login with your password the first time!", Toast.LENGTH_LONG).show();
+                }
+                else if(settings.getBoolean("voice_registered", false)){
+                    //when the user hasn't yet registered with voice
+                    intent = new Intent(LoginActivity.this, VoiceLoginActivity.class);
+                    startActivity(intent);
                 }
                 else{
-                    //For instances when the user has already registered with voice
-                    Intent voiceLoginIntent = new Intent(LoginActivity.this, VoiceLoginActivity.class);
-                    startActivity(voiceLoginIntent);
+                    //when the user has already registered with voice
+                    intent = new Intent(LoginActivity.this, VoicednaAuthActivity.class);
+                    startActivity(intent);
                 }
 
             }
@@ -138,9 +147,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //TODO Check if the user is registered to this method of auth
-
-                Intent magiclinkAuthIntent = new Intent(LoginActivity.this, MagiclinkAuthActivity.class);
-                startActivity(magiclinkAuthIntent);
+                if (!settings.getBoolean("registered", false)){
+                    //When user hasn't registered for an account
+                    Toast.makeText(context, "Login with your password the first time!", Toast.LENGTH_LONG).show();
+                    startActivity(intent);
+                }
+                else {
+                    intent = new Intent(LoginActivity.this, MagiclinkAuthActivity.class);
+                }
             }
         });
     }

@@ -8,13 +8,26 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="teamh.zapapp.VoiceLoginActivity">
 
-
+    <TextView
+        android:text="Verify with the phrase that you enrolled with."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Record Voice"
-        android:id="@+id/button_record_voicelogin"/>
+        android:text="Record"
+        android:id="@+id/btn_record"/>
+
+    <Button
+        android:text="Verify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_verify"
+        />
 </LinearLayout>

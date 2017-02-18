@@ -3,6 +3,7 @@ package teamh.zapapp;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,14 +15,20 @@ import android.widget.Toast;
 
 import com.microsoft.cognitive.speakerrecognition.SpeakerVerificationRestClient;
 import com.microsoft.cognitive.speakerrecognition.contract.CreateProfileException;
+import com.microsoft.cognitive.speakerrecognition.contract.EnrollmentException;
 import com.microsoft.cognitive.speakerrecognition.contract.verification.CreateProfileResponse;
+import com.microsoft.cognitive.speakerrecognition.contract.verification.Enrollment;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
 import cafe.adriel.androidaudiorecorder.model.AudioChannel;
 import cafe.adriel.androidaudiorecorder.model.AudioSampleRate;
 import cafe.adriel.androidaudiorecorder.model.AudioSource;
+
+import static teamh.zapapp.ZapHelper.PREFS_NAME;
 
 public class VoicednaAuthActivity extends AppCompatActivity {
 
@@ -31,11 +38,19 @@ public class VoicednaAuthActivity extends AppCompatActivity {
     private boolean permissionToStoreAccepted = false;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     //local variables
-    private String filepath1, filepath2, filepath3;
+    private String audio_filepath, audio_filepath1, audio_filepath2, audio_filepath3;
+    private FileInputStream audio_file;
     private Context context;
     private SpeakerVerificationRestClient client;
-    private Button record1, record2, record3, register;
+    private Button record, enroll, login;
     private CreateProfileResponse profile;
+    private Enrollment enroll_obj;
+    private int color;
+    private int enrolled = 0;
+    private boolean recorded = false;
+    private SharedPreferences settings;
+    private SharedPreferences.Editor editor;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,29 +58,34 @@ public class VoicednaAuthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_voicedna_auth);
 
         context = getApplicationContext();
+        settings = getSharedPreferences(PREFS_NAME, 0);
+        editor = settings.edit();
+        audio_filepath = getFilesDir().getAbsolutePath() + "/audioSample.wav";
+        color = getResources().getColor(R.color.colorPrimaryDark);
+
         client = new SpeakerVerificationRestClient(SubKey.sub_key1);
-        record1 = (Button) findViewById(R.id.btn_record1);
-        record3 = (Button) findViewById(R.id.btn_record2);
-        record2 = (Button) findViewById(R.id.btn_record3);
-        register = (Button) findViewById(R.id.btn_register);
+        record = (Button) findViewById(R.id.btn_record);
+        enroll = (Button) findViewById(R.id.btn_enroll);
 
         //request permissions
         ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS);
 
+        try {
+            profile = client.createProfile("en-us");
+            Toast.makeText(context, "Profile Created!", Toast.LENGTH_SHORT).show();
+        } catch (IOException | CreateProfileException e) {
+            Toast.makeText(context, "Error on Profile Creation!", Toast.LENGTH_LONG).show();
+        }
 
-        record1.setOnClickListener(new View.OnClickListener() {
+        record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //String filePath = Environment.getExternalStorageDirectory() + "/audioSample1.wav";
-                filepath1 = getFilesDir().getAbsolutePath() + "/audioSample1.wav";
-                int color = getResources().getColor(R.color.colorPrimaryDark);
-                int requestCode = 0;
-
+                recorded = false;
                 AndroidAudioRecorder.with(VoicednaAuthActivity.this)
                         // Required
-                        .setFilePath(filepath1)
+                        .setFilePath(audio_filepath)
                         .setColor(color)
-                        .setRequestCode(requestCode)
+                        .setRequestCode(0)
                         // Optional
                         .setSource(AudioSource.MIC)
                         .setChannel(AudioChannel.MONO)
@@ -78,66 +98,43 @@ public class VoicednaAuthActivity extends AppCompatActivity {
         });
 
 
-        record2.setOnClickListener(new View.OnClickListener() {
+        enroll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                filepath2 = getFilesDir().getAbsolutePath() + "/audioSample2.wav";
-                int color = getResources().getColor(R.color.colorPrimaryDark);
-                int requestCode = 0;
+                if (!recorded) {
+                    Toast.makeText(context, "No recording!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                AndroidAudioRecorder.with(VoicednaAuthActivity.this)
-                        // Required
-                        .setFilePath(filepath2)
-                        .setColor(color)
-                        .setRequestCode(requestCode)
-                        // Optional
-                        .setSource(AudioSource.MIC)
-                        .setChannel(AudioChannel.MONO)
-                        .setSampleRate(AudioSampleRate.HZ_16000)
-                        .setAutoStart(true)
-                        .setKeepDisplayOn(true)
-                        // Start recording
-                        .record();
-            }
-        });
-
-
-        record3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //String filePath = Environment.getExternalStorageDirectory() + "/audioSample3.wav";
-                filepath3 = getFilesDir().getAbsolutePath() + "/audioSample3.wav";
-                int color = getResources().getColor(R.color.colorPrimaryDark);
-                int requestCode = 0;
-
-                AndroidAudioRecorder.with(VoicednaAuthActivity.this)
-                        // Required
-                        .setFilePath(filepath3)
-                        .setColor(color)
-                        .setRequestCode(requestCode)
-                        // Optional
-                        .setSource(AudioSource.MIC)
-                        .setChannel(AudioChannel.MONO)
-                        .setSampleRate(AudioSampleRate.HZ_16000)
-                        .setAutoStart(true)
-                        .setKeepDisplayOn(true)
-                        // Start recording
-                        .record();
-            }
-        });
-
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
                 try {
-                    profile = client.createProfile("en-us");
-                    Toast.makeText(context, profile.verificationProfileId.toString(), Toast.LENGTH_LONG).show();
-                } catch (IOException | CreateProfileException e) {
+                    //implement enrollment calls
+                    audio_file = new FileInputStream(new File(audio_filepath));
+                    enroll_obj = client.enroll(audio_file,profile.verificationProfileId);
+                    audio_file.close();
+                    enrolled+=1;
+                    assert enrolled == enroll_obj.enrollmentsCount;
+                    Toast.makeText(context, "count:"+enroll_obj.enrollmentsCount+" remaining:"+enroll_obj.remainingEnrollments+" phrase: "+enroll_obj.phrase, Toast.LENGTH_LONG).show();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                }  catch (EnrollmentException e) {
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
+
+                if (enrolled == 3){
+                    Toast.makeText(context, "Success: Registered for voice!", Toast.LENGTH_LONG).show();
+                    editor.putString("voice_profileid",profile.verificationProfileId.toString());
+                    editor.putBoolean("voice_registered",true);
+                    editor.commit();
+                    intent = new Intent(VoicednaAuthActivity.this, VoiceLoginActivity.class);
+                    startActivity(intent);
+                }
+
+                recorded = false;
             }
         });
-
     }
 
 
@@ -159,10 +156,12 @@ public class VoicednaAuthActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-
+                Toast.makeText(context, "Recording Successfull!", Toast.LENGTH_SHORT).show();
+                recorded=true;
                 // Great! User has recorded and saved the audio file
             } else if (resultCode == RESULT_CANCELED) {
                 // Oops! User has canceled the recording
+                Toast.makeText(context, "Recording Cancelled!", Toast.LENGTH_SHORT).show();
             }
         }
 
