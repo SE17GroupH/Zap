@@ -1,7 +1,9 @@
 package teamh.zapapp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,11 +11,24 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.microsoft.cognitive.speakerrecognition.SpeakerVerificationRestClient;
+import com.microsoft.cognitive.speakerrecognition.contract.verification.Verification;
+import com.microsoft.cognitive.speakerrecognition.contract.verification.VerificationException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.UUID;
 
 import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
 import cafe.adriel.androidaudiorecorder.model.AudioChannel;
 import cafe.adriel.androidaudiorecorder.model.AudioSampleRate;
 import cafe.adriel.androidaudiorecorder.model.AudioSource;
+
+import static teamh.zapapp.ZapHelper.PREFS_NAME;
 
 public class VoiceLoginActivity extends AppCompatActivity {
 
@@ -22,30 +37,42 @@ public class VoiceLoginActivity extends AppCompatActivity {
     private boolean permissionToRecordAccepted = false;
     private boolean permissionToStoreAccepted = false;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
+    private SharedPreferences settings;
+    private SharedPreferences.Editor editor;
+    private int color;
     private String filepath;
+    private Context context;
+    private boolean recorded = false;
+    private Button btn_record, btn_verify;
+    private SpeakerVerificationRestClient client;
+    private Verification verify;
+    private FileInputStream audio_file;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voice_login);
+        settings = getSharedPreferences(PREFS_NAME, 0);
+        editor = settings.edit();
+        context = getApplicationContext();
+        client = new SpeakerVerificationRestClient(SubKey.sub_key1);
 
+        filepath = getFilesDir().getAbsolutePath() + "/audioLogin.wav";
+        color = getResources().getColor(R.color.colorPrimaryDark);
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS);
 
-        Button button = (Button) findViewById(R.id.button_record_voicelogin);
-        button.setOnClickListener(new View.OnClickListener() {
+        btn_record = (Button) findViewById(R.id.btn_record);
+        btn_verify = (Button) findViewById(R.id.btn_verify);
+
+        btn_record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //String filePath = Environment.getExternalStorageDirectory() + "/audioSample1.wav";
-                filepath = getFilesDir().getAbsolutePath() + "/audioLogin.wav";
-                int color = getResources().getColor(R.color.colorPrimaryDark);
-                int requestCode = 0;
                 AndroidAudioRecorder.with(VoiceLoginActivity.this)
                         // Required
                         .setFilePath(filepath)
                         .setColor(color)
-                        .setRequestCode(requestCode)
+                        .setRequestCode(0)
                         // Optional
                         .setSource(AudioSource.MIC)
                         .setChannel(AudioChannel.MONO)
@@ -54,6 +81,38 @@ public class VoiceLoginActivity extends AppCompatActivity {
                         .setKeepDisplayOn(true)
                         // Start recording
                         .record();
+            }
+        });
+
+        btn_verify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!recorded) {
+                    Toast.makeText(context, "Need Recording!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                try {
+                    audio_file = new FileInputStream(new File(filepath));
+                    try {
+
+                        verify = client.verify(audio_file, UUID.fromString(settings.getString("voice_profileid","")));
+                    } catch (VerificationException | IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (audio_file!=null)
+                        try {
+                            audio_file.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                }
+
+                Toast.makeText(context, verify.result.toString() + " " + verify.confidence.toString(), Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -77,10 +136,12 @@ public class VoiceLoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-
+                Toast.makeText(context, "Recording Successfull!", Toast.LENGTH_SHORT).show();
+                recorded = true;
                 // Great! User has recorded and saved the audio file
             } else if (resultCode == RESULT_CANCELED) {
                 // Oops! User has canceled the recording
+                Toast.makeText(context, "Recording Cancelled!", Toast.LENGTH_SHORT).show();
             }
         }
     }
