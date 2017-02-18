@@ -36,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     private Response response;
     private LoginResponse login;
     private LoginError logine;
+    private EmailError loginm;
     private SharedPreferences settings;
     private SharedPreferences.Editor editor;
     private Intent intent;
@@ -95,6 +96,9 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show();
                         save();
                         startActivity(intent);
+                    } else if (response.code()==401){
+                        logine = gson.fromJson(response.body().charStream(), LoginError.class);
+                        Toast.makeText(context, String.format("Failed: %s", loginm.error), Toast.LENGTH_LONG).show();
                     } else {
                         logine = gson.fromJson(response.body().charStream(), LoginError.class);
                         Toast.makeText(context, String.format("Failed: %s", logine.errors), Toast.LENGTH_LONG).show();

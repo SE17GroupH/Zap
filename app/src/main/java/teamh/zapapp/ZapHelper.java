@@ -65,6 +65,9 @@ class LoginError {
     public String errors;
 }
 
+class EmailError {
+    public String error;
+}
 
 class RegisterError {
     public Map<String, String[]> errors;
