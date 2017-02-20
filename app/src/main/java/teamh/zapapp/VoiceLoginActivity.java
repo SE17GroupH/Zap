@@ -131,7 +131,11 @@ public class VoiceLoginActivity extends AppCompatActivity {
                 permissionToStoreAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                 break;
         }
-        if (!(permissionToRecordAccepted && permissionToStoreAccepted) ) finish();
+        if (!(permissionToRecordAccepted && permissionToStoreAccepted) ){
+            //go to the start of the login activity
+            Intent loginpageIntent = new Intent(VoiceLoginActivity.this, LoginActivity.class);
+            startActivity(loginpageIntent);
+        }
 
     }
 
