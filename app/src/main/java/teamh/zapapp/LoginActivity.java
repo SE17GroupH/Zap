@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(context, "Invalid Email!", Toast.LENGTH_SHORT).show();
                     return;
                 } else if(passwd.length() < 6){
-                    Toast.makeText(context, "Password too small!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Password too short!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -154,10 +154,22 @@ public class LoginActivity extends AppCompatActivity {
                 if (!settings.getBoolean("registered", false)){
                     //When user hasn't registered for an account
                     Toast.makeText(context, "Login with your password the first time!", Toast.LENGTH_LONG).show();
-                    startActivity(intent);
                 }
                 else {
-                    intent = new Intent(LoginActivity.this, MagiclinkAuthActivity.class);
+                    email = settings.getString("email","");
+                    json_request = String.format("{'magiclink':{'email':'%s'}}",email);
+                    Toast.makeText(context, json_request, Toast.LENGTH_LONG).show();
+                    try {
+                        response = ZapHelper.post_zap(client, ZapHelper.zapregister_url, json_request);
+                        if (response.isSuccessful()) {
+                            Toast.makeText(context, "Email sent!", Toast.LENGTH_LONG).show();
+                        } else {
+                            logine = gson.fromJson(response.body().charStream(), LoginError.class);
+                            Toast.makeText(context, String.format("Failed: %s", logine.errors), Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+                        Log.w("ZapApp","IOException");
+                    }
                 }
             }
         });

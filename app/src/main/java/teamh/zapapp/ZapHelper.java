@@ -24,6 +24,7 @@ public class ZapHelper {
     final static String zaplogout_url = "https://zapserver.herokuapp.com/api/sessions/%s";
     final static String zaplogin_url = "https://zapserver.herokuapp.com/api/sessions";
     final static String zapregister_url = "https://zapserver.herokuapp.com/api/users";
+    final static String zapmagic_url = "https://zapserver.herokuapp.com/api/magiclinks";
 
     public final static MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 

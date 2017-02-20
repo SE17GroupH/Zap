@@ -5,12 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
-
-import java.io.IOException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -49,8 +45,8 @@ public class ProfileActivity extends AppCompatActivity{
             public void onClick(View view) {
                 editor.putBoolean("loggedin", false);
                 editor.commit();
-
-                if(auth_token!=null){
+                //logout api call
+                /*if(auth_token!=null){
                     try {
                         response = ZapHelper.delete_zap(client, url);
                         if(response.isSuccessful()){
@@ -60,6 +56,7 @@ public class ProfileActivity extends AppCompatActivity{
                         Log.w("ZapApp","IOException");
                     }
                 }
+                */
                 startActivity(intent);
             }
         });
