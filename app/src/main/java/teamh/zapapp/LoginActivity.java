@@ -157,10 +157,10 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else {
                     email = settings.getString("email","");
-                    json_request = String.format("{'magiclink':{'email':'%s'}}",email);
+                    json_request = String.format("{ \"magiclink\": { \"email\": \"%s\" } }",email);
                     Toast.makeText(context, json_request, Toast.LENGTH_LONG).show();
                     try {
-                        response = ZapHelper.post_zap(client, ZapHelper.zapregister_url, json_request);
+                        response = ZapHelper.post_zap(client, ZapHelper.zapmagic_url, json_request);
                         if (response.isSuccessful()) {
                             Toast.makeText(context, "Email sent!", Toast.LENGTH_LONG).show();
                         } else {
