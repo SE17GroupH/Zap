@@ -53,15 +53,14 @@ public class MagiclinkLoginActivity extends AppCompatActivity {
         if (!settings.getBoolean("registered", false)){
             //When user hasn't registered for an account
             Toast.makeText(context, "Login with your password the first time!", Toast.LENGTH_LONG).show();
-
         }
         else{
             email = settings.getString("email","");
-            json_request = String.format("{'authorization':{'email':'%s','auth_token':'%s'}}", email, auth_token);
+            json_request = String.format("{\"authorization\":{\"email\":\"%s\",\"auth_token\":\"%s\"}}", email, auth_token);
             System.out.println(json_request);
             Toast.makeText(context, json_request, Toast.LENGTH_LONG).show();
             try {
-                response = ZapHelper.post_zap(client, ZapHelper.zapmagic_url, json_request);
+                response = ZapHelper.post_zap(client, ZapHelper.zapmagicauth_url, json_request);
                 if (response.isSuccessful()) {
                     login = gson.fromJson(response.body().charStream(), LoginResponse.class);
                     Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show();
