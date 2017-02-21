@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -23,11 +24,11 @@ public class MagiclinkLoginActivity extends AppCompatActivity {
 
     //local variables
     private Context context;
-    private final OkHttpClient client = new OkHttpClient();
-    private final Gson gson = new Gson();
+    private static OkHttpClient client;
+    private static Gson gson;
     private String email, passwd, json_request;
     private Response response;
-    private LoginResponse login;
+    private LoginError login;
     private LoginError logine;
     private EmailError loginm;
     private SharedPreferences settings;
@@ -38,15 +39,20 @@ public class MagiclinkLoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_magiclink_login);
+        client = new OkHttpClient();
+        gson = new Gson();
         context = getApplicationContext();
         settings = getSharedPreferences(PREFS_NAME, 0);
         //trigger this activity when the user clicks on the magic link
         intent = getIntent();
         Uri data = intent.getData();
-
         //get auth token
         String url = data.toString();
         auth_token = getAuthToken(url);
+
+        //set text view to auth-token
+        TextView tv = (TextView) findViewById(R.id.textview_magiclogin_display);
+        tv.setText(auth_token);
 
         //Login via auth token
         //Check if user is registered
@@ -59,35 +65,8 @@ public class MagiclinkLoginActivity extends AppCompatActivity {
             json_request = String.format("{\"authorization\":{\"email\":\"%s\",\"auth_token\":\"%s\"}}", email, auth_token);
             System.out.println(json_request);
             Toast.makeText(context, json_request, Toast.LENGTH_LONG).show();
-            try {
-                response = ZapHelper.post_zap(client, ZapHelper.zapmagicauth_url, json_request);
-                if (response.isSuccessful()) {
-                    login = gson.fromJson(response.body().charStream(), LoginResponse.class);
-                    Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show();
-                    //start login activity
-                    Intent profileIntent = new Intent(MagiclinkLoginActivity.this, ProfileActivity.class);
-                    startActivity(profileIntent);
-                } else if (response.code()==401){
-                    loginm = gson.fromJson(response.body().charStream(), EmailError.class);
-                    Toast.makeText(context, String.format("Failed: %s", loginm.error), Toast.LENGTH_LONG).show();
-                } else {
-                    logine = gson.fromJson(response.body().charStream(), LoginError.class);
-                    Toast.makeText(context, String.format("Failed: %s", logine.errors), Toast.LENGTH_LONG).show();
-                }
-
-            } catch (IOException e) {
-                Log.w("ZapApp","IOException");
-            }
-
-
-
-
+            new LoginMagic().execute(json_request);
         }
-
-
-
-        TextView tv = (TextView) findViewById(R.id.textview_magiclogin_display);
-        tv.setText(getAuthToken(url));
     }
 
     //parse url for auth token
@@ -96,5 +75,41 @@ public class MagiclinkLoginActivity extends AppCompatActivity {
         String auth_part = url_parts[url_parts.length-1];
         String[] temp = auth_part.split("=");
         return temp[temp.length-1];
+    }
+
+    //Background thread to execute Magic-Link Login API call
+    class LoginMagic extends AsyncTask<String, String, Response >{
+
+        protected Response doInBackground(String... strings) {
+            String json_request = strings[0];
+            OkHttpClient client = new OkHttpClient();
+            Response response = null;
+            try {
+                response = ZapHelper.post_zap(client, ZapHelper.zapmagicauth_url, json_request);
+            } catch (IOException e) {
+                Log.w("ZapApp","IOException");
+            }
+            return response;
+        }
+
+
+        protected void onPostExecute(Response response) {
+            if(response == null){
+                Toast.makeText(context, String.format("Got a null response"), Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (response.isSuccessful()) {
+                Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show();
+                //start profile activity
+                Intent profileIntent = new Intent(MagiclinkLoginActivity.this, ProfileActivity.class);
+                startActivity(profileIntent);
+            } else {
+                logine = gson.fromJson(response.body().charStream(), LoginError.class);
+                Toast.makeText(context, String.format("Failed: %s", logine.errors), Toast.LENGTH_LONG).show();
+                //go to the start of the login activity
+                Intent loginpageIntent = new Intent(MagiclinkLoginActivity.this, LoginActivity.class);
+                startActivity(loginpageIntent);
+            }
+        }
     }
 }
