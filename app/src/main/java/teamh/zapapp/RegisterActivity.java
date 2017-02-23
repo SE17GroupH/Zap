@@ -2,6 +2,7 @@ package teamh.zapapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -70,21 +71,46 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 } else {
                     json_request = String.format("{ \"user\": { \"email\": \"%s\", \"password\": \"%s\", \"password_confirmation\": \"%s\" } }",email, passwd, rpasswd);
-                    try {
-                        response = ZapHelper.post_zap(client, ZapHelper.zapregister_url, json_request);
-                        if (response.isSuccessful()) {
-                            Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
-                            startActivity(loginIntent);
-                        } else {
-                            logine = gson.fromJson(response.body().charStream(), RegisterError.class);
-                            Toast.makeText(context, String.format("Failed: Email %s", logine.errors.get("email")), Toast.LENGTH_LONG).show();
-                        }
-
-                    } catch (IOException e) {
-                        Log.w("ZapApp","IOException");
-                    }
+                    new LoginRegister().execute(json_request);
                 }
             }
         });
     }
+
+
+
+
+    //Background thread to execute Register  API call
+    class LoginRegister extends AsyncTask<String, String, Response > {
+
+        protected Response doInBackground(String... strings) {
+            String json_request = strings[0];
+            OkHttpClient client = new OkHttpClient();
+            Response response = null;
+
+            try {
+                response = ZapHelper.post_zap(client, ZapHelper.zapregister_url, json_request);
+
+            } catch (IOException e) {
+                Log.w("ZapApp","IOException");
+            }
+            return response;
+        }
+
+
+        protected void onPostExecute(Response response) {
+
+            if (response.isSuccessful()) {
+                Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
+                startActivity(loginIntent);
+            } else {
+                logine = gson.fromJson(response.body().charStream(), RegisterError.class);
+                Toast.makeText(context, String.format("Failed: Email %s", logine.errors.get("email")), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
+
+
 }
