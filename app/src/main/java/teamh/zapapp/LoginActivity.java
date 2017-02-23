@@ -155,8 +155,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-
-
     //Background thread to execute Magic-Link Login API call
     class LoginMagicDefault extends AsyncTask<String, String, Response > {
 
