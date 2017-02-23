@@ -3,6 +3,7 @@ package teamh.zapapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -89,24 +90,10 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                try {
-                    response = ZapHelper.post_zap(client, ZapHelper.zaplogin_url, json_request);
-                    if (response.isSuccessful()) {
-                        login = gson.fromJson(response.body().charStream(), LoginResponse.class);
-                        Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show();
-                        save();
-                        startActivity(intent);
-                    } else if (response.code()==401){
-                        loginm = gson.fromJson(response.body().charStream(), EmailError.class);
-                        Toast.makeText(context, String.format("Failed: %s", loginm.error), Toast.LENGTH_LONG).show();
-                    } else {
-                        logine = gson.fromJson(response.body().charStream(), LoginError.class);
-                        Toast.makeText(context, String.format("Failed: %s", logine.errors), Toast.LENGTH_LONG).show();
-                    }
 
-                } catch (IOException e) {
-                    Log.w("ZapApp","IOException");
-                }
+                //start background thread here
+                new LoginDefault().execute(json_request);
+
             }
         });
 
@@ -174,6 +161,50 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
+
+
+    //Background thread to execute Magic-Link Login API call
+    class LoginDefault extends AsyncTask<String, String, Response > {
+
+        protected Response doInBackground(String... strings) {
+            String json_request = strings[0];
+            OkHttpClient client = new OkHttpClient();
+            Response response = null;
+
+            try {
+                response = ZapHelper.post_zap(client, ZapHelper.zaplogin_url, json_request);
+
+            } catch (IOException e) {
+                Log.w("ZapApp","IOException");
+            }
+
+            return response;
+        }
+
+
+        protected void onPostExecute(Response response) {
+
+            if (response.isSuccessful()) {
+                login = gson.fromJson(response.body().charStream(), LoginResponse.class);
+                Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show();
+                save();
+                startActivity(intent);
+            } else if (response.code()==401){
+                loginm = gson.fromJson(response.body().charStream(), EmailError.class);
+                Toast.makeText(context, String.format("Failed: %s", loginm.error), Toast.LENGTH_LONG).show();
+            } else {
+                logine = gson.fromJson(response.body().charStream(), LoginError.class);
+                Toast.makeText(context, String.format("Failed: %s", logine.errors), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
+
+
 }
 
 
