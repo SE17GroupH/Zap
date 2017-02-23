@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -49,10 +48,6 @@ public class MagiclinkLoginActivity extends AppCompatActivity {
         //get auth token
         String url = data.toString();
         auth_token = getAuthToken(url);
-
-        //set text view to auth-token
-        TextView tv = (TextView) findViewById(R.id.textview_magiclogin_display);
-        tv.setText(auth_token);
 
         //Login via auth token
         //Check if user is registered
