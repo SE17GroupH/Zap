@@ -31,10 +31,10 @@ public class LoginActivity extends AppCompatActivity {
     EditText et_email, et_passwd;
     //local variables
     private Context context;
-    private final OkHttpClient client = new OkHttpClient();
+    //private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
     private String email, passwd, json_request;
-    private Response response;
+    //private Response response;
     private LoginResponse login;
     private LoginError logine;
     private EmailError loginm;
@@ -90,7 +90,6 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-
                 //start background thread here
                 new LoginDefault().execute(json_request);
 
@@ -144,19 +143,11 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else {
                     email = settings.getString("email","");
-                    json_request = String.format("{'magiclink':{'email':'%s'}}",email);
-                    Toast.makeText(context, json_request, Toast.LENGTH_LONG).show();
-                    try {
-                        response = ZapHelper.post_zap(client, ZapHelper.zapregister_url, json_request);
-                        if (response.isSuccessful()) {
-                            Toast.makeText(context, "Email sent!", Toast.LENGTH_LONG).show();
-                        } else {
-                            logine = gson.fromJson(response.body().charStream(), LoginError.class);
-                            Toast.makeText(context, String.format("Failed: %s", logine.errors), Toast.LENGTH_LONG).show();
-                        }
-                    } catch (IOException e) {
-                        Log.w("ZapApp","IOException");
-                    }
+                    json_request = String.format("{\"magiclink\":{\"email\":\"%s\"}}",email);
+
+
+                    //make API call in background thread
+                    new LoginMagicDefault().execute(json_request);
                 }
             }
         });
@@ -167,6 +158,39 @@ public class LoginActivity extends AppCompatActivity {
 
 
     //Background thread to execute Magic-Link Login API call
+    class LoginMagicDefault extends AsyncTask<String, String, Response > {
+
+        protected Response doInBackground(String... strings) {
+            String json_request = strings[0];
+
+            OkHttpClient client = new OkHttpClient();
+            Response response = null;
+
+            try {
+                response = ZapHelper.post_zap(client, ZapHelper.zapmagic_url, json_request);
+
+            } catch (IOException e) {
+                Log.w("ZapApp","IOException");
+            }
+            return response;
+        }
+
+
+        protected void onPostExecute(Response response) {
+
+            if (response.isSuccessful()) {
+                Toast.makeText(context, "Email sent!", Toast.LENGTH_LONG).show();
+            } else {
+                logine = gson.fromJson(response.body().charStream(), LoginError.class);
+                Toast.makeText(context, String.format("Failed: %s", logine.errors), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
+
+
+    //Background thread to execute Default Login Login API call
     class LoginDefault extends AsyncTask<String, String, Response > {
 
         protected Response doInBackground(String... strings) {
