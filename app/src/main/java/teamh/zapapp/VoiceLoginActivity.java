@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -92,31 +93,8 @@ public class VoiceLoginActivity extends AppCompatActivity {
                     Toast.makeText(context, "Need Recording!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                new VoiceEnroll().execute("");
 
-                try {
-                    audio_file = new FileInputStream(new File(filepath));
-                    try {
-                        verify = client.verify(audio_file, UUID.fromString(settings.getString("voice_profileid","")));
-                        Toast.makeText(context, verify.result.toString() + " " + verify.confidence.toString(), Toast.LENGTH_LONG).show();
-                        if (verify.result.toString() == "ACCEPT") {
-                            intent = new Intent(VoiceLoginActivity.this, ProfileActivity.class);
-                            startActivity(intent);
-                        }
-                    } catch (VerificationException | IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (audio_file!=null)
-                        try {
-                            audio_file.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                }
-                recorded = false;
             }
         });
 
@@ -150,6 +128,43 @@ public class VoiceLoginActivity extends AppCompatActivity {
             } else if (resultCode == RESULT_CANCELED) {
                 // Oops! User has canceled the recording
                 Toast.makeText(context, "Recording Cancelled!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    class VoiceEnroll extends AsyncTask<String, String, Verification > {
+
+        protected Verification doInBackground(String... strings) {
+
+            try {
+                audio_file = new FileInputStream(new File(filepath));
+                try {
+                    verify = client.verify(audio_file, UUID.fromString(settings.getString("voice_profileid","")));
+                } catch (VerificationException | IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                if (audio_file!=null)
+                    try {
+                        audio_file.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+            }
+            return verify;
+
+        }
+
+
+        protected void onPostExecute(Verification verify) {
+            Toast.makeText(context, verify.result.toString() + " " + verify.confidence.toString(), Toast.LENGTH_LONG).show();
+            recorded = false;
+            if (verify.result.toString() == "ACCEPT") {
+                intent = new Intent(VoiceLoginActivity.this, ProfileActivity.class);
+                startActivity(intent);
             }
         }
     }
