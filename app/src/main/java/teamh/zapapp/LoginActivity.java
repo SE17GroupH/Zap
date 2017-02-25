@@ -206,6 +206,10 @@ public class LoginActivity extends AppCompatActivity {
 
 
         protected void onPostExecute(Response response) {
+            if (response==null) {
+                Toast.makeText(context, "Failed! Please check your connection.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             if (response.isSuccessful()) {
                 login = gson.fromJson(response.body().charStream(), LoginResponse.class);

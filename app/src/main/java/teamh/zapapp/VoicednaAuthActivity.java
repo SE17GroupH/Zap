@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -105,34 +106,8 @@ public class VoicednaAuthActivity extends AppCompatActivity {
                     Toast.makeText(context, "No recording!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                new VoiceEnroll().execute("");
 
-                try {
-                    //implement enrollment calls
-                    audio_file = new FileInputStream(new File(audio_filepath));
-                    enroll_obj = client.enroll(audio_file,profile.verificationProfileId);
-                    audio_file.close();
-                    enrolled+=1;
-                    assert enrolled == enroll_obj.enrollmentsCount;
-                    Toast.makeText(context, "count:"+enroll_obj.enrollmentsCount+" remaining:"+enroll_obj.remainingEnrollments+" phrase: "+enroll_obj.phrase, Toast.LENGTH_LONG).show();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-                }  catch (EnrollmentException e) {
-                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }
-
-                if (enrolled == 3){
-                    Toast.makeText(context, "Success: Registered for voice!", Toast.LENGTH_LONG).show();
-                    editor.putString("voice_profileid",profile.verificationProfileId.toString());
-                    editor.putBoolean("voice_registered",true);
-                    editor.commit();
-                    intent = new Intent(VoicednaAuthActivity.this, VoiceLoginActivity.class);
-                    startActivity(intent);
-                }
-
-                recorded = false;
             }
         });
     }
@@ -165,5 +140,45 @@ public class VoicednaAuthActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    class VoiceEnroll extends AsyncTask<String, String, Enrollment > {
+
+        protected Enrollment doInBackground(String... strings) {
+            try {
+                audio_file = new FileInputStream(new File(audio_filepath));
+                enroll_obj = client.enroll(audio_file,profile.verificationProfileId);
+                audio_file.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            }  catch (EnrollmentException e) {
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
+            return enroll_obj;
+        }
+
+
+        protected void onPostExecute(Enrollment enroll_obj) {
+            if (enrolled+1 == enroll_obj.enrollmentsCount) {
+                enrolled+=1;
+                Toast.makeText(context, "Success! Remaining:"+enroll_obj.remainingEnrollments, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(context, "Failed! Please try again", Toast.LENGTH_LONG).show();
+            }
+
+            if (enrolled == 3){
+                Toast.makeText(context, "Success: Registered for voice!", Toast.LENGTH_LONG).show();
+                editor.putString("voice_profileid",profile.verificationProfileId.toString());
+                editor.putBoolean("voice_registered",true);
+                editor.commit();
+                intent = new Intent(VoicednaAuthActivity.this, VoiceLoginActivity.class);
+                startActivity(intent);
+            }
+
+            recorded = false;
+
+        }
     }
 }

@@ -93,7 +93,7 @@ public class VoiceLoginActivity extends AppCompatActivity {
                     Toast.makeText(context, "Need Recording!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                new VoiceEnroll().execute("");
+                new VoiceVerify().execute("");
 
             }
         });
@@ -132,7 +132,7 @@ public class VoiceLoginActivity extends AppCompatActivity {
         }
     }
 
-    class VoiceEnroll extends AsyncTask<String, String, Verification > {
+    class VoiceVerify extends AsyncTask<String, String, Verification > {
 
         protected Verification doInBackground(String... strings) {
 
