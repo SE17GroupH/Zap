@@ -6,7 +6,7 @@ An Android application showcasing 3 methods of authentication:
 - via Token(or Magic) link 
 
 To use Microsoft API for Speaker Recongition:
-- Create a SubKey.java file with contents these contents with your Subscription Keys [generated](https://cognitive.uservoice.com/knowledgebase/articles/864225-how-do-i-get-subscription-keys):
+- Create a SubKey.java file with contents these contents with your Subscription Keys [generated](https://cognitive.uservoice.com/knowledgebase/articles/864225-how-do-i-get-subscription-keys) and put it [here with the source files](https://github.com/SE17GroupH/Zap/tree/master/app/src/main/java/teamh/zapapp):
 
 ```Java
 package teamh.zapapp;
