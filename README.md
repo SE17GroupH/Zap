@@ -1,15 +1,15 @@
 # Zap
 
-### Voice DNA api: 
-            https://www.microsoft.com/cognitive-services/en-us/speaker-recognition-api
+An Android application showcasing 3 methods of authentication:
+- Fingerprint
+- Voice via Speaker Recognition
+- via Token(or Magic) link 
 
-### Fingerprint API and resources:
-            https://github.com/search?utf8=%E2%9C%93&q=fingerprint+android
-            https://github.com/sitepoint-editors/AndroidFingerprintAPI
-            https://www.sitepoint.com/securing-your-android-apps-with-the-fingerprint-api/
-            https://developer.android.com/reference/android/hardware/fingerprint/FingerprintManager.html
-            
-            
-### Magic link API and resources:
-            Auth0
-            
+To use Microsoft API for Speaker Recongition:
+- Create a SubKey.java file with contents these contents with your Subscription Keys [generated](https://cognitive.uservoice.com/knowledgebase/articles/864225-how-do-i-get-subscription-keys):
+
+            package teamh.zapapp;
+            public class SubKey {
+                        public final static String sub_key1 = "abcd123abc123abc123abc123abc0000";
+                        public final static String sub_key2 = "abcd123abc123abc123abc123abc0000";
+            }
