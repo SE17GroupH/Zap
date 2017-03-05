@@ -17,6 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildTypes.each{
+        it.buildConfigField 'String', 'SPEAKER_RECOGNITION_API_KEY_1', "\"$System.env.SOMEVAR\""
+    }
     packagingOptions {
         exclude 'META-INF/LICENSE'
     }
