@@ -1,10 +1,22 @@
 language: android
 jdk: oraclejdk8
-sudo: true
 android:
   components:
   - platform-tools
   - tools
-  - build-tools-25.0.0
-  - android-25
-  - extra-android-m2repository
+  - build-tools-$ANDROID_BUILD_TOOLS
+  - android-$ANDROID_API
+
+env:
+ global:
+ - ANDROID_API=25
+ - ANDROID_BUILD_TOOLS=25.0.2
+ - secure: "Miaxsxn8p484GwA25v9HDxNH+xNVXf8IBygS+0BBsxrX7tW6AMppDKfVuc+Ri3S0lTKUVpRg4P4oXLrgY0QKtdUvHlOT4P4P91cyHkK3PAHNA/1Vfx2JxnXEiWnY6LYMmjCT7rv0Cjvav4hBOLhovEq0M5mvyj54zhxxUB5Rps3VnuLM2/avn6peMSiS1V2XigPIwTwJjdM6KPXSalfUmjy5PFff4mBJhykrci8jwF1bdAtzeC2kYxHTfrcJlKce7BDtAiWqnDrH9Ibw2LTpOIvt++NeUlyJwyq8kXfmskTgMPtubK/hbPg+xGHtMKKNWecNgN+lBc9WsfG1OgM1TW3keBm2o98+INM7EToTfEx+FEB1Yf2B+lnvNDMQWcurJdtciQ0JYOSFo5heo+jr2G5iTF8r7oykjOukaxdtRasMUzX+R0X9kEY7YPzQCPYZia3wrcu6CCMqpDG6/6h1RuYqPc+4A62bNhYYdPqhmu2XCazusPPxddkwvsgmtW6GUAG0JJjKsXZ7J6xbrjvryByBti5sNZuVQVYYCriYJf1Sy/qmTbUFXUdVSjZyYBsqB3UrEcx+OQqXRI4UbD/JJ0pNB7jtNqpVcnw+zRBOjIbK8U1tX+Ov/8O84b0T8E2sRektnUQQ/0+G7xMVZEK//Nz5uVO21BcslqaC1W8Cmoo="
+
+script:
+- ./gradlew assembleDebug testDebugUnitTest
+
+before_install:
+- mkdir "$ANDROID_HOME/licenses" || true
+- echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
+- echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
