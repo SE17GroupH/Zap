@@ -63,7 +63,7 @@ public class VoicednaAuthActivity extends AppCompatActivity {
         editor = settings.edit();
         audio_filepath = getFilesDir().getAbsolutePath() + "/audioSample.wav";
         color = getResources().getColor(R.color.colorPrimaryDark);
-        client = new SpeakerVerificationRestClient(SubKey.sub_key1);
+        client = new SpeakerVerificationRestClient(BuildConfig.SPEAKER_RECOGNITION_API_KEY_1);
         record = (Button) findViewById(R.id.btn_record);
         enroll = (Button) findViewById(R.id.btn_enroll);
 
