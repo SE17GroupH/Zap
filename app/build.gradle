@@ -18,7 +18,7 @@ android {
         }
     }
     buildTypes.each{
-        it.buildConfigField 'String', 'SPEAKER_RECOGNITION_API_KEY_1', "\"$System.env.SOMEVAR\""
+        it.buildConfigField 'String', 'SPEAKER_RECOGNITION_API_KEY_1', "\"$System.env.API_KEY_1\""
     }
     packagingOptions {
         exclude 'META-INF/LICENSE'

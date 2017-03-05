@@ -14,4 +14,9 @@ public class ExampleUnitTest {
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
     }
+
+    @Test
+    public void apikey_isCorrect() throws Exception {
+        assertEquals(32, BuildConfig.SPEAKER_RECOGNITION_API_KEY_1.length());
+    }
 }
