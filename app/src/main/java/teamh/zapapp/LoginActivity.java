@@ -144,8 +144,6 @@ public class LoginActivity extends AppCompatActivity {
                 else {
                     email = settings.getString("email","");
                     json_request = String.format("{\"magiclink\":{\"email\":\"%s\"}}",email);
-
-
                     //make API call in background thread
                     new LoginMagicDefault().execute(json_request);
                 }
@@ -208,6 +206,10 @@ public class LoginActivity extends AppCompatActivity {
 
 
         protected void onPostExecute(Response response) {
+            if (response==null) {
+                Toast.makeText(context, "Failed! Please check your connection.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             if (response.isSuccessful()) {
                 login = gson.fromJson(response.body().charStream(), LoginResponse.class);
