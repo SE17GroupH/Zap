@@ -15,3 +15,7 @@ env:
 
 script:
 - ./gradlew assembleDebug testDebugUnitTest
+
+licenses:
+- android-sdk-license-.+
+- android-sdk-preview-license-.+
