@@ -7,8 +7,12 @@ android:
   - build-tools-25.0.2
   - android-25
 
+
+notifications:
+  email: false
+
 script:
-- ./gradlew assembleDebug testDebugUnitTest
+- ./gradlew -PdisablePreDex assembleDebug testDebugUnitTest
 
 before_install:
 - mkdir "$ANDROID_HOME/licenses" || true
