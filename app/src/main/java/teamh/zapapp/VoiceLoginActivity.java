@@ -57,9 +57,7 @@ public class VoiceLoginActivity extends AppCompatActivity {
         settings = getSharedPreferences(PREFS_NAME, 0);
         editor = settings.edit();
         context = getApplicationContext();
-        //Log.d("zap: key1", BuildConfig.SPEAKER_RECOGNITION_API_KEY_1);
-        //Log.d("zap: key2", BuildConfig.SPEAKER_RECOGNITION_API_KEY_1);
-        //client = new SpeakerVerificationRestClient(BuildConfig.SPEAKER_RECOGNITION_API_KEY_1);
+        client = new SpeakerVerificationRestClient(SubKey.sub_key1);
 
         filepath = getFilesDir().getAbsolutePath() + "/audioLogin.wav";
         color = getResources().getColor(R.color.colorPrimaryDark);
