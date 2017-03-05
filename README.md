@@ -1,4 +1,5 @@
 # Zap
+[![Build Status](https://travis-ci.org/SE17GroupH/Zap.svg?branch=master)](https://travis-ci.org/SE17GroupH/Zap)
 
 An Android application showcasing 3 methods of authentication:
 - Fingerprint
