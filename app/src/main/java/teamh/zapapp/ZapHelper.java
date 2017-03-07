@@ -74,3 +74,5 @@ class EmailError {
 class RegisterError {
     public Map<String, String[]> errors;
 }
+
+
