@@ -6,7 +6,16 @@ An Android application showcasing 3 methods of authentication:
 - Voice via Speaker Recognition
 - via Token(or Magic) link 
 
-To use Microsoft API for Speaker Recongition:
+### App Screenshots
+
+![homepage] (/screenshots/homepage.png)
+![register] (/screenshots/register.png)  
+![login] (/screenshots/login.png)
+![voicedna] (/screenshots/voicedna.png)  
+
+  
+### Mircosoft API (for speaker recognition) usage:
+
 - Create a file named **SubKey.java** which will contain your Subscription Keys [generated](https://cognitive.uservoice.com/knowledgebase/articles/864225-how-do-i-get-subscription-keys) and put it [here with the source files](https://github.com/SE17GroupH/Zap/tree/master/app/src/main/java/teamh/zapapp):
 
 ```Java
