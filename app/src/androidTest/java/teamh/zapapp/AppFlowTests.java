@@ -48,6 +48,17 @@ public class AppFlowTests {
         onView(withId(R.id.btn_logout)).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void basicInvalidAppFlow() throws  Exception {
+        onView(withId(R.id.button_homepage_login)).perform(click());
+        onView(withId(R.id.edittext_login_email)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_password)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_login_email)).perform(typeText("sid.sharma0@gmail.com"));
+        onView(withId(R.id.edittext_password)).perform(typeText("123456"));
+        onView(withId(R.id.button_login)).perform(click());
+        onView(withId(R.id.edittext_password)).check(matches(isDisplayed()));
+    }
+
 
 
 
