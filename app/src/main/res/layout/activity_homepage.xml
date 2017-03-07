@@ -4,6 +4,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     android:id="@+id/activity_homepage">
 
     <LinearLayout
@@ -21,6 +24,7 @@
             android:layout_marginBottom="8sp"
             android:layout_gravity="center_horizontal"
             android:textAlignment="center"
+
             android:textSize="32sp" />
 
         <TextView
@@ -29,6 +33,7 @@
             android:textAlignment="center"
             android:fontFamily="monospace"
             android:text="A study on simpler authentication methods"
+
             android:layout_gravity="center_horizontal"
             android:textSize="16sp" />
 
@@ -40,6 +45,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16sp"
+        android:background="#ff7e51c2"
+        android:textColor="#ffffffff"
         android:id="@+id/button_homepage_register" />
 
     <Button
@@ -47,5 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16sp"
+        android:background="#ff7e51c2"
+        android:textColor="#ffffffff"
         android:id="@+id/button_homepage_login" />
 </LinearLayout>
