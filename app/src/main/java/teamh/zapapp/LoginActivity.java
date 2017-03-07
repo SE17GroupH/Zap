@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         buttonLoginVoicedna = (Button) findViewById(R.id.button_login_voicedna);
         buttonLoginMagiclink = (Button) findViewById(R.id.button_login_magiclink);
 
-        Toast.makeText(context, BuildConfig.SPEAKER_RECOGNITION_API_KEY_1, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, BuildConfig.SPEAKER_RECOGNITION_API_KEY_1, Toast.LENGTH_SHORT).show();
         //set onclick listeners for the buttons
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
