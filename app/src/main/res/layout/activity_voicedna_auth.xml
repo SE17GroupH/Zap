@@ -13,6 +13,8 @@
     <TextView
         android:text="Record and enroll 3 voice samples with the phrase: "
         android:layout_width="match_parent"
+        android:layout_margin="16sp"
+        android:textSize="28sp"
         android:layout_height="wrap_content"
         android:id="@+id/textView2"
         android:textAppearance="@android:style/TextAppearance.Material.Medium" />
@@ -22,6 +24,8 @@
         android:text="Houston we have had a problem."
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="16sp"
+        android:textSize="28sp"
         android:id="@+id/textView3"
         android:textAppearance="@android:style/TextAppearance.Material.Headline" />
 
@@ -29,12 +33,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Record"
+        android:layout_margin="16sp"
+        android:background="#ff7e51c2"
+        android:textColor="#ffffffff"
         android:id="@+id/btn_record"/>
 
     <Button
         android:text="Enroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#ff7e51c2"
+        android:layout_margin="16sp"
+        android:textColor="#ffffffff"
         android:id="@+id/btn_enroll" />
 
 </LinearLayout>
