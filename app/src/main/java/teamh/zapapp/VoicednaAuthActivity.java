@@ -110,6 +110,7 @@ public class VoicednaAuthActivity extends AppCompatActivity {
                     Toast.makeText(context, "No recording!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 new VoiceEnroll().execute("");
 
             }
@@ -154,17 +155,26 @@ public class VoicednaAuthActivity extends AppCompatActivity {
                 enroll_obj = client.enroll(audio_file,profile.verificationProfileId);
                 audio_file.close();
             } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                return null;
             }  catch (EnrollmentException e) {
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-                e.printStackTrace();
+                return null;
+
+            } catch (Exception e){
+                Toast.makeText(context, "Failed! Please try again", Toast.LENGTH_LONG).show();
+                return null;
             }
+
             return enroll_obj;
         }
 
 
         protected void onPostExecute(Enrollment enroll_obj) {
+
+            if(enroll_obj == null){
+                Toast.makeText(context, "Failed! Please try again", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             if (enrolled+1 == enroll_obj.enrollmentsCount) {
                 enrolled+=1;
                 Toast.makeText(context, "Success! Remaining:"+enroll_obj.remainingEnrollments, Toast.LENGTH_LONG).show();
