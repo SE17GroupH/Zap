@@ -74,8 +74,8 @@ public class LoginActivity extends AppCompatActivity {
         buttonLoginVoicedna = (Button) findViewById(R.id.button_login_voicedna);
         buttonLoginMagiclink = (Button) findViewById(R.id.button_login_magiclink);
 
-        //Toast.makeText(context, BuildConfig.SPEAKER_RECOGNITION_API_KEY_1, Toast.LENGTH_SHORT).show();
-        //set onclick listeners for the buttons
+
+        //on click listener for the Login Button
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,25 +83,21 @@ public class LoginActivity extends AppCompatActivity {
                 passwd = et_passwd.getText().toString();
                 json_request = String.format("{ \"session\": { \"email\": \"%s\", \"password\": \"%s\" } }",email, passwd);
 
-
-                if (!email.contains("@")) {
-                    Toast.makeText(context, "Invalid Email!", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if(passwd.length() < 6){
-                    Toast.makeText(context, "Password too short!", Toast.LENGTH_SHORT).show();
+                if(! (Util.emailIsValid(email) && Util.passwordIsValid(passwd)) ) {
+                    Toast.makeText(context, "Invalid Email or Password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 //start background thread here
                 new LoginDefault().execute(json_request);
 
             }
         });
 
+        //on click listener for the FingerPrint Login button
         buttonLoginFingerprint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Check if the user is registered to this method of auth
+                // check user registration
                 if (!settings.getBoolean("registered", false)){
                     //When user hasn't registered for an account
                     Toast.makeText(context, "Login with your password the first time!", Toast.LENGTH_LONG).show();
@@ -110,14 +106,15 @@ public class LoginActivity extends AppCompatActivity {
                     intent = new Intent(LoginActivity.this, FingerprintAuthActivity.class);
                     startActivity(intent);
                 }
-
             }
         });
+
+        //on click listener for the VoiceDNA Login button
         buttonLoginVoicedna.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Check if the user is registered to this method of auth
-                //TODO Check if user is registered via voice or not
+
+
                 if (!settings.getBoolean("registered", false)){
                     //When user hasn't registered for an account
                     Toast.makeText(context, "Login with your password the first time!", Toast.LENGTH_LONG).show();
@@ -135,10 +132,12 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+
+        //on click listener for MagicLink Login button
         buttonLoginMagiclink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Check if the user is registered to this method of auth
+
                 if (!settings.getBoolean("registered", false)){
                     //When user hasn't registered for an account
                     Toast.makeText(context, "Login with your password the first time!", Toast.LENGTH_LONG).show();
