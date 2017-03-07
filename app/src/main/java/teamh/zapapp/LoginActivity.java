@@ -83,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                 passwd = et_passwd.getText().toString();
                 json_request = String.format("{ \"session\": { \"email\": \"%s\", \"password\": \"%s\" } }",email, passwd);
 
+
                 if (!email.contains("@")) {
                     Toast.makeText(context, "Invalid Email!", Toast.LENGTH_SHORT).show();
                     return;

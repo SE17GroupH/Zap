@@ -24,16 +24,16 @@ public class ExampleUnitTest {
     @Test
     public void email_isValid() throws  Exception {
         RegisterActivity reg_activity = new RegisterActivity();
-        boolean res1 = reg_activity.emailIsValid("foobarhello.com");
-        boolean res2 = reg_activity.emailIsValid("foobar@hello.com");
+        boolean res1 = Util.emailIsValid("foobarhello.com");
+        boolean res2 = Util.emailIsValid("foobar@hello.com");
         assertEquals(true,(!res1 && res2));
     }
 
     @Test
     public void password_isValid() throws  Exception {
-        RegisterActivity reg_activity = new RegisterActivity();
-        boolean res1 = reg_activity.passwordIsValid("1234");
-        boolean res2 = reg_activity.passwordIsValid("123456");
+
+        boolean res1 = Util.passwordIsValid("1234");
+        boolean res2 = Util.passwordIsValid("123456");
         assertEquals(true,(!res1 && res2));
     }
 

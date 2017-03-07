@@ -19,6 +19,9 @@ import java.io.IOException;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
+import static teamh.zapapp.Util.passwordIsValid;
+import static teamh.zapapp.Util.passwordsMatch;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -60,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
                 passwd = et_passwd.getText().toString();
                 rpasswd = et_rpasswd.getText().toString();
 
-                if(emailIsValid(email) && passwordIsValid(passwd) && passwordsMatch(passwd, rpasswd)){
+                if(Util.emailIsValid(email) && Util.passwordIsValid(passwd) && Util.passwordsMatch(passwd, rpasswd)){
                     json_request = String.format("{ \"user\": { \"email\": \"%s\", \"password\": \"%s\", \"password_confirmation\": \"%s\" } }",email, passwd, rpasswd);
                     new LoginRegister().execute(json_request);
                 }
@@ -72,29 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    protected boolean emailIsValid(String email){
-        if (!email.contains("@")) {
-            //Toast.makeText(context, "Invalid Email!", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
-    }
 
-    protected boolean passwordIsValid(String passwd){
-        if(passwd.length() < 6){
-            //Toast.makeText(context, "Password too small!", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
-    }
-
-    protected  boolean passwordsMatch(String passwd, String rpasswd){
-        if(!passwd.equals(rpasswd)){
-            //Toast.makeText(context, "Password don't match!", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
-    }
 
     //Background thread to execute Register  API call
     class LoginRegister extends AsyncTask<String, String, Response > {
