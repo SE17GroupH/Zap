@@ -9,9 +9,11 @@
     >
 
     <TextView
-        android:text="Hello. You loggedin to your account successfully!"
+        android:text="Hello. You logged in to your account successfully!"
         android:layout_width="match_parent"
+        android:textSize="28sp"
         android:layout_height="wrap_content"
+        android:layout_margin="16sp"
         android:id="@+id/textView"
         android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
@@ -19,5 +21,8 @@
         android:text="Logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#ff7e51c2"
+        android:textColor="#ffffffff"
+        android:layout_margin="16sp"
         android:id="@+id/btn_logout" />
 </LinearLayout>
