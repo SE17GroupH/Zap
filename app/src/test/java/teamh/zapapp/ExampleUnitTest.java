@@ -2,7 +2,7 @@ package teamh.zapapp;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -19,4 +19,7 @@ public class ExampleUnitTest {
     public void apikey_isCorrect() throws Exception {
         assertEquals(32, BuildConfig.SPEAKER_RECOGNITION_API_KEY_1.length());
     }
+
+
+
 }
