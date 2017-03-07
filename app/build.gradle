@@ -32,6 +32,7 @@ repositories {
     maven {
         url "https://jitpack.io"
     }
+    jcenter()
 }
 
 dependencies {
@@ -39,6 +40,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    testCompile "org.mockito:mockito-core:2.+"
 
     compile 'com.microsoft.cognitive:speakerrecognition:1.0.0'
     compile 'com.github.adrielcafe:AndroidAudioRecorder:0.2.0'

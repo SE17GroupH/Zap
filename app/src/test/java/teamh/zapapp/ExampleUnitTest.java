@@ -2,7 +2,7 @@ package teamh.zapapp;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -36,5 +36,6 @@ public class ExampleUnitTest {
         boolean res2 = Util.passwordIsValid("123456");
         assertEquals(true,(!res1 && res2));
     }
+
 
 }
