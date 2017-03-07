@@ -48,6 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="textPassword"
+            android:hint="At least 6 characters"
             android:ems="10"
             android:id="@+id/edittext_register_password"/>
 

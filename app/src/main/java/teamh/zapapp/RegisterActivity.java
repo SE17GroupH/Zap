@@ -19,6 +19,9 @@ import java.io.IOException;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
+import static teamh.zapapp.Util.passwordIsValid;
+import static teamh.zapapp.Util.passwordsMatch;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -60,23 +63,17 @@ public class RegisterActivity extends AppCompatActivity {
                 passwd = et_passwd.getText().toString();
                 rpasswd = et_rpasswd.getText().toString();
 
-                if (!email.contains("@")) {
-                    Toast.makeText(context, "Invalid Email!", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if(passwd.length() < 6){
-                    Toast.makeText(context, "Password too small!", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if(!passwd.equals(rpasswd)){
-                    Toast.makeText(context, "Passwords do not match!",
-                            Toast.LENGTH_LONG).show();
-                } else {
+                if(Util.emailIsValid(email) && Util.passwordIsValid(passwd) && Util.passwordsMatch(passwd, rpasswd)){
                     json_request = String.format("{ \"user\": { \"email\": \"%s\", \"password\": \"%s\", \"password_confirmation\": \"%s\" } }",email, passwd, rpasswd);
                     new LoginRegister().execute(json_request);
                 }
+                else{
+                    Toast.makeText(context, "Invalid Email or Password!", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
     }
-
 
 
 
@@ -108,6 +105,10 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(context, String.format("Failed: Email %s", logine.errors.get("email")), Toast.LENGTH_LONG).show();
             }
         }
+
+
+
+
     }
 
 
