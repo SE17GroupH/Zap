@@ -28,7 +28,7 @@ deploy:
   skip_cleanup: true
   on:
     repo: SE17GroupH/Zap
-    tag: true
+    tags: true
     branch: master
 env:
   global:
