@@ -26,9 +26,20 @@ android {
     lintOptions {
         abortOnError false
     }
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def project = "Zap"
+            def SEP = "_"
+            def buildType = variant.variantData.variantConfiguration.buildType.name
+            def version = variant.versionName
+            def newApkName = project + SEP + buildType + SEP + version+".apk"
+            output.outputFile = new File(output.outputFile.parent, newApkName)
+        }
+    }
 }
 
 repositories {
+    jcenter()
     maven {
         url "https://jitpack.io"
     }
@@ -40,7 +51,10 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile "org.mockito:mockito-core:2.+"
+
+    androidTestCompile('com.android.support.test.espresso:espresso-intents:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
 
     compile 'com.microsoft.cognitive:speakerrecognition:1.0.0'
     compile 'com.github.adrielcafe:AndroidAudioRecorder:0.2.0'
@@ -48,4 +62,8 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
     testCompile 'junit:junit:4.12'
+}
+
+configurations {
+    compile.exclude group: "org.apache.httpcomponents", module: "httpclient"
 }

@@ -103,7 +103,7 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(loginIntent);
             } else {
                 logine = gson.fromJson(response.body().charStream(), RegisterError.class);
-                Toast.makeText(context, String.format("Failed: Email %s", logine.errors.get("email")), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, String.format("Failed: Email %s", logine.errors.get("email").toString()), Toast.LENGTH_LONG).show();
             }
         }
 

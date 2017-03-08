@@ -78,8 +78,8 @@ public class LoginActivity extends AppCompatActivity {
         buttonLoginVoicedna = (Button) findViewById(R.id.button_login_voicedna);
         buttonLoginMagiclink = (Button) findViewById(R.id.button_login_magiclink);
 
+        //set onclick listeners for the buttons
 
-        //on click listener for the Login Button
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
