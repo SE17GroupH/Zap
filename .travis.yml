@@ -1,6 +1,5 @@
 language: android
 jdk: oraclejdk8
-sudo: required
 android:
   components:
   - platform-tools
@@ -10,7 +9,7 @@ android:
 notifications:
   email: false
 script:
-- "./gradlew -PdisablePreDex clean assembleRelease testReleaseUnitTest"
+- "./gradlew -PdisablePreDex assembleRelease test"
 before_install:
 - openssl aes-256-cbc -K $encrypted_24a3a0d64d66_key -iv $encrypted_24a3a0d64d66_iv
   -in zap.jks.enc -out zap.jks -d
