@@ -9,19 +9,28 @@ android:
 notifications:
   email: false
 script:
-- "./gradlew -PdisablePreDex assembleRelease testReleaseUnitTest"
+- "./gradlew -PdisablePreDex clean assembleRelease testReleaseUnitTest"
 before_install:
+- openssl aes-256-cbc -K $encrypted_24a3a0d64d66_key -iv $encrypted_24a3a0d64d66_iv
+  -in sid.jks.enc -out sid.jks -d
 - mkdir "$ANDROID_HOME/licenses" || true
 - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
 - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+before_deploy:
+- cp $TRAVIS_BUILD_DIR/.keystore $HOME
+- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/keystore.jks -storepass $storepass -keypass $keypass Zap_release_*.apk sid.jks
 deploy:
   provider: releases
   api_key:
     secure: B00buZYZeAva8lOMqfcYym+5SQu9kOWl0KWiPGEFGL1rTBYcxoazT7SKUmuVGEwkd0kuVSBibbcrtpfGxG3rH2/rUp6PUIRfJNSBL1P+/KYmn0vDyhup2ehqlS40gSAcX9EolvCaYAp1AxEDxwZf+amq37JJMyigv/n1ADUvKB3k4CUodIlzZor+ib3OR6htKEYjLDgvKb41K5MsujVuIWy9Q8pzH9fpzJoAKZ/IFSpqNHz3NRUoYd1kw30CjgQPxjuvP2dIGgMsfI7+T7so06ZUFITOur61KQ0uWa6xhYkxVw8fdUIDlyZcOjzK56bFm6UZIS0vZu1RR+aWPpSZUsOiTFtlnTMj1Dy7OS6uyT3H2xDoeEzTNNIwh4LvVrKfw9eLzYYGMwQnro10kL1yqYYgeOPgLFT5qgYgu2UsvnKEcIgYR8DOGlZvR9KN/4BeM78jIFXU9xlVj9DLoZQWk7tPbgOUjDIafNQtfo9x6v+8tRwrRtBOdsHGtyinEMxs7ANbnchQVTHPt1MTTIKC79Pcnyg3wsR0MhE+3h4KrCshjpK0ARf60koPtLhcjNB0Mbx4A6RsNs1phXycNErMIDbURG4BsVj4ztisrCTPf2y9qJ5sMU70FUcVvdiuUCiRX0OvY0C9DkhtOwPMJpswaqcaVdDRxLQwqPWAh1GYSCE=
   file_glob: true
-  file: "app/build/outputs/apk/Zap_release_*.apk"
+  file: app/build/outputs/apk/Zap_release_*.apk
   skip_cleanup: true
   on:
-    tags: true
-    branch: master
+    #tags: true
+    #branch: master
     repo: SE17GroupH/Zap
+env:
+  global:
+  - secure: l5cIkzJTSPTBmhCaV6BP+lH/t4C4HUt/taZ4E8OIrzAm2OqMdwgcyXJa/zKuvkG9yWxERgtNOgh8m8nZBnnolV3CeELdLQsv0FP8aCjB9ebDc/ky8pqR3TijEOEdw91ITc2LBjkm7pofhj4drlZtv/RXv1ECDRxHyDR1IzSP9O63oU0pXPKQYSfprKgivKyQb2Cd2tLtWKbqzHB2uWWDrUG+07nOXyZnAXWRJLP1iwyVgrLszCUDwwevmxu1+MwnVhRGyzxM5Z275zRN99cynGsf7x9XkodOzgbVZAH13BVEpijVyQRH7jY2HHWj0cmOd+wrr4Y85fEDrLYY0gb45nbEyR+mWbYgnkL4pFMXaaQmpkRdyoA3OX27GMXvWIb2BUFaHGeK5CD5qn6hPkuxMTMJ3r6G4YHnjnqBZqWYSSptJMbJEJbf02AUy8BTDtUCIfIzUH1o6QUCEXa45xvdo9Rtxf/vSxG1pghrrxkq4dWfXnaMuJfGNOsSQ3b0cfE0E34WYhif3b9bZ9NFpq/qd4pCs5tISVk+9+LbQUqoOMA8900PKSsIyQaZykbmCJEaS8mxZjaJfY3Zuyo1h8qMMkpXsIMP3UsutL4ablb99u5j9eNhweDGLpvE8/UwNNIcnu5COqB6rbusSAhxw5xwYKU3/6mob79FyKVutMRoslU=
+  - secure: E7moKlYX7AOAJiwT0gHRhe1E8/XC5h+b7gHP3uF78TRGpc5s3l/EvZgutSoHQcIhynIOfR/RZIPFW5eCuvAYolxy434Z9chXXW7l0rAl1i+/mqmpKt5hxgsFMnP//YmHOwwrH/9WfsHnvPKqwe/tiRMCQauGdWIMktcwPR1kvMOh7VgcnlTNE52wNsLA35N4xwmHJCTx9ljNP8FA6jTpgQsjJsCuRpIxnLObv9qt4RTExyde5a/YZxwapbNM63AJWQjfdtSLyzMPXl2dwVkfDAIhJwSi9Q9b092bXuogNB1KwbHYpO5UCYLWb1jwlDIN4kvID3BwcJRk39Y5UzbQ7Xm3CqMktUdmuZmBCjaBvNqdT007W5A277gi5KSbg/6swiRUtgQm/ZU0sk8vZxrQjwUuzBZm3Ks0f6Evjnfpheu9eTNPfNr7/9QioTs8m4VfdU6PFfApfZWFhqRZq2RXRF7vFF3f7QZYiAiHjsZgpxEoGl4UlVl8zVT38l2p15xT7dRkjCIPWAGHEwAGro0fKkc4k5cWx65yrqTB23FCb9+EKkAITickyO6bOk/ATZtZh/rC+MDoNEOjawmyZmg2kqL1IhmoAQfuXP/Vllxxj7FFASw1H+ABr/Q7Fcgho7L9/x9skEuL5VeSh8BwHPhcuQjvbel2pfS5451d7jVzEmk=
