@@ -1,12 +1,16 @@
 # Zap
 [![Build Status](https://travis-ci.org/SE17GroupH/Zap.svg?branch=master)](https://travis-ci.org/SE17GroupH/Zap)
 
+Part of CS510 project 2017 NCSU
+
 An Android application showcasing 3 methods of authentication:
 - Fingerprint
 - Voice via Speaker Recognition
 - via Token(or Magic) link 
 
 ### [Downloads](https://github.com/SE17GroupH/Zap/releases)
+
+### [More Details](https://github.com/SE17GroupH/Zap/wiki)
 
 ### App Screenshots
 
