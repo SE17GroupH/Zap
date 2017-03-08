@@ -6,7 +6,7 @@ An Android application showcasing 3 methods of authentication:
 - Voice via Speaker Recognition
 - via Token(or Magic) link 
 
-### [Downloads]((https://github.com/SE17GroupH/Zap/releases))
+### [Downloads](https://github.com/SE17GroupH/Zap/releases)
 
 ### App Screenshots
 
