@@ -6,16 +6,21 @@ android:
   - tools
   - build-tools-25.0.2
   - android-25
-
-
 notifications:
   email: false
-
 script:
-- ./gradlew -PdisablePreDex assembleDebug testDebugUnitTest
-
+- "./gradlew -PdisablePreDex assembleRelease testReleaseUnitTest"
 before_install:
 - mkdir "$ANDROID_HOME/licenses" || true
 - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
 - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
-
+deploy:
+  provider: releases
+  api_key:
+    secure: B00buZYZeAva8lOMqfcYym+5SQu9kOWl0KWiPGEFGL1rTBYcxoazT7SKUmuVGEwkd0kuVSBibbcrtpfGxG3rH2/rUp6PUIRfJNSBL1P+/KYmn0vDyhup2ehqlS40gSAcX9EolvCaYAp1AxEDxwZf+amq37JJMyigv/n1ADUvKB3k4CUodIlzZor+ib3OR6htKEYjLDgvKb41K5MsujVuIWy9Q8pzH9fpzJoAKZ/IFSpqNHz3NRUoYd1kw30CjgQPxjuvP2dIGgMsfI7+T7so06ZUFITOur61KQ0uWa6xhYkxVw8fdUIDlyZcOjzK56bFm6UZIS0vZu1RR+aWPpSZUsOiTFtlnTMj1Dy7OS6uyT3H2xDoeEzTNNIwh4LvVrKfw9eLzYYGMwQnro10kL1yqYYgeOPgLFT5qgYgu2UsvnKEcIgYR8DOGlZvR9KN/4BeM78jIFXU9xlVj9DLoZQWk7tPbgOUjDIafNQtfo9x6v+8tRwrRtBOdsHGtyinEMxs7ANbnchQVTHPt1MTTIKC79Pcnyg3wsR0MhE+3h4KrCshjpK0ARf60koPtLhcjNB0Mbx4A6RsNs1phXycNErMIDbURG4BsVj4ztisrCTPf2y9qJ5sMU70FUcVvdiuUCiRX0OvY0C9DkhtOwPMJpswaqcaVdDRxLQwqPWAh1GYSCE=
+  file_glob: true
+  file: "build/outputs/apk/Zap_release_*.apk"
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: SE17GroupH/Zap

@@ -19,9 +19,6 @@ import java.io.IOException;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
-import static teamh.zapapp.Util.passwordIsValid;
-import static teamh.zapapp.Util.passwordsMatch;
-
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -102,7 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(loginIntent);
             } else {
                 logine = gson.fromJson(response.body().charStream(), RegisterError.class);
-                Toast.makeText(context, String.format("Failed: Email %s", logine.errors.get("email")), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, String.format("Failed: Email %s", logine.errors.get("email").toString()), Toast.LENGTH_LONG).show();
             }
         }
 
