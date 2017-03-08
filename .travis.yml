@@ -28,6 +28,8 @@ deploy:
   skip_cleanup: true
   on:
     repo: SE17GroupH/Zap
+    tag: true
+    branch: master
 env:
   global:
   - secure: Lrxb50nz5/U/5fyM5Gmrti4AbF0HLxPCMhM/l02LjU8ssY8RG+IUACd0zryhF+4o4NjG40RtDboBSJub7Vs8wpZR9ICnkDrcgtnoXRH1DKKD3Y/Cxd/UptVD2I9c7nNL5uwO4WSYsia+0hev/7f7CCvX5JjJTZtACUVDwEViwKkADO6S0x0cxCzluWkkqrEAbx/pj8cq9CUaMkqcJj8nJzzFcM5f8YK08CQ7SeMxIddqHH+HNMv7u/6ij3l8Rs+kfFEU21GUSrhlnKynYSknQdWzOabhmyWhm/oKblONZn6QaNtCeBJv20+fUzEUP52uSama/fMzc29NQ2ScAwBp4u+k00PchK7NlSGQG7v+7Po9h9uIiA1pdeM8eG/1X62FQTeayG9koJaZz+0rWEN3iKgU5OVehpLnMWH+Xg3T9jwcFN4Xj6tCUGiWwh0Rj5CpmMoKwIbL1TKuOCYbGdzMvjsI3Ax2rfEX+Ro3UY86RtXgUJSPh54dUA3RSBO/UXgHXNdj+C10kKB9Evom3wTpphAxtoxX6NUNI8HYSOZs6+IvdfFRipe1xPvbqUk54/5vbvCdzPu4+vm4/sjQielKmjyYkVx7AuZ6XjRNpVlIrZchMADcpDUl5P8/38ZBkEUyPVXgrtALRDMh9YFsPNRZTDT85kUMfQw4K0mG7F5Qb3U=
