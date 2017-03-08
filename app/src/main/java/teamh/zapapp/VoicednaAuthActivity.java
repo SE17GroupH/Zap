@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -56,6 +57,10 @@ public class VoicednaAuthActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_voicedna_auth);
 
         context = getApplicationContext();
@@ -105,6 +110,7 @@ public class VoicednaAuthActivity extends AppCompatActivity {
                     Toast.makeText(context, "No recording!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 new VoiceEnroll().execute("");
 
             }
@@ -149,17 +155,26 @@ public class VoicednaAuthActivity extends AppCompatActivity {
                 enroll_obj = client.enroll(audio_file,profile.verificationProfileId);
                 audio_file.close();
             } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                return null;
             }  catch (EnrollmentException e) {
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-                e.printStackTrace();
+                return null;
+
+            } catch (Exception e){
+                Toast.makeText(context, "Failed! Please try again", Toast.LENGTH_LONG).show();
+                return null;
             }
+
             return enroll_obj;
         }
 
 
         protected void onPostExecute(Enrollment enroll_obj) {
+
+            if(enroll_obj == null){
+                Toast.makeText(context, "Failed! Please try again", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             if (enrolled+1 == enroll_obj.enrollmentsCount) {
                 enrolled+=1;
                 Toast.makeText(context, "Success! Remaining:"+enroll_obj.remainingEnrollments, Toast.LENGTH_LONG).show();
