@@ -28,13 +28,14 @@ public class RegisterActivity extends AppCompatActivity {
     EditText et_email, et_passwd, et_rpasswd;
     //local variables
     private Context context;
-    private final OkHttpClient client = new OkHttpClient();
     private String email, passwd, rpasswd,json_request;
-    private Response response;
     private final Gson gson = new Gson();
     private RegisterError logine;
-    private Intent loginIntent;
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(RegisterActivity.this, HomepageActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void init(){
         context = getApplicationContext();
-        loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
 
         bt_Register = (Button) findViewById(R.id.register);
         et_email = (EditText) findViewById(R.id.edittext_register_email);
@@ -83,12 +83,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         protected Response doInBackground(String... strings) {
             String json_request = strings[0];
-            OkHttpClient client = new OkHttpClient();
             Response response = null;
 
             try {
-                response = ZapHelper.post_zap(client, ZapHelper.zapregister_url, json_request);
-
+                response = ZapHelper.post_zap(new OkHttpClient(), ZapHelper.zapregister_url, json_request);
             } catch (IOException e) {
                 Log.w("ZapApp","IOException");
             }
@@ -99,17 +97,13 @@ public class RegisterActivity extends AppCompatActivity {
         protected void onPostExecute(Response response) {
 
             if (response.isSuccessful()) {
-                Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
-                startActivity(loginIntent);
+                Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             } else {
                 logine = gson.fromJson(response.body().charStream(), RegisterError.class);
                 Toast.makeText(context, String.format("Failed: Email %s", logine.errors.get("email").toString()), Toast.LENGTH_LONG).show();
             }
         }
-
-
-
-
     }
 
 

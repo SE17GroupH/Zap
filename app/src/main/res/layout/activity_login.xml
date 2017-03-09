@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
@@ -69,41 +70,44 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:text="Or"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_margin="4sp"
             android:layout_weight="0"
-            android:layout_gravity="center_horizontal"
-            android:layout_height="wrap_content" />
+            android:text="OR"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"
+            />
 
         <Button
+            android:id="@+id/button_login_fingerprint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="16sp"
+            android:background="#ff7e51c2"
             android:text="Login via FingerPrint"
-            android:layout_margin="16sp"
-            android:background="#ff7e51c2"
-            android:textColor="#ffffffff"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/button_login_fingerprint"/>
+            android:textColor="#ffffffff" />
 
         <Button
+            android:id="@+id/button_login_voicedna"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Login via Voice-DNA"
+            android:layout_gravity="center_horizontal"
             android:layout_margin="16sp"
             android:background="#ff7e51c2"
-            android:textColor="#ffffffff"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/button_login_voicedna"/>
+            android:text="Login via Voice"
+            android:textColor="#ffffffff" />
 
         <Button
+            android:id="@+id/button_login_magiclink"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Login via Magic-Link"
+            android:layout_gravity="center_horizontal"
             android:layout_margin="16sp"
             android:background="#ff7e51c2"
-            android:textColor="#ffffffff"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/button_login_magiclink"/>
+            android:text="Login via MagicLink"
+            android:textColor="#ffffffff" />
 
 
 

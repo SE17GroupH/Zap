@@ -32,17 +32,13 @@ public class LoginActivity extends AppCompatActivity {
     EditText et_email, et_passwd;
     //local variables
     private Context context;
-    //private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
     private String email, passwd, json_request;
-    //private Response response;
     private LoginResponse login;
     private LoginError logine;
     private EmailError loginm;
     private SharedPreferences settings;
     private SharedPreferences.Editor editor;
-    private Intent intent;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +52,11 @@ public class LoginActivity extends AppCompatActivity {
         init();
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(LoginActivity.this, HomepageActivity.class));
+    }
+
     protected void save(){
         editor.putBoolean("loggedin", true);
         editor.putString("auth_token", login.auth_token);
@@ -66,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void init(){
-        intent = new Intent(LoginActivity.this, ProfileActivity.class);
         context = getApplicationContext();
         settings = getSharedPreferences(PREFS_NAME, 0);
         editor = settings.edit();
@@ -107,8 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(context, "Login with your password the first time!", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    intent = new Intent(LoginActivity.this, FingerprintAuthActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(LoginActivity.this, FingerprintAuthActivity.class));
                 }
             }
         });
@@ -125,13 +124,10 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else if(settings.getBoolean("voice_registered", false)){
                     //when the user hasn't yet registered with voice
-                    intent = new Intent(LoginActivity.this, VoiceLoginActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(LoginActivity.this, VoiceLoginActivity.class));
                 }
                 else{
-                    //when the user has already registered with voice
-                    intent = new Intent(LoginActivity.this, VoicednaAuthActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(LoginActivity.this, VoicedRegisterActivity.class));
                 }
 
             }
@@ -160,15 +156,12 @@ public class LoginActivity extends AppCompatActivity {
 
     //Background thread to execute Magic-Link Login API call
     class LoginMagicDefault extends AsyncTask<String, String, Response > {
-
         protected Response doInBackground(String... strings) {
             String json_request = strings[0];
-
-            OkHttpClient client = new OkHttpClient();
             Response response = null;
 
             try {
-                response = ZapHelper.post_zap(client, ZapHelper.zapmagic_url, json_request);
+                response = ZapHelper.post_zap(new OkHttpClient(), ZapHelper.zapmagic_url, json_request);
 
             } catch (IOException e) {
                 Log.w("ZapApp","IOException");
@@ -176,9 +169,7 @@ public class LoginActivity extends AppCompatActivity {
             return response;
         }
 
-
         protected void onPostExecute(Response response) {
-
             if (response.isSuccessful()) {
                 Toast.makeText(context, "Email sent!", Toast.LENGTH_LONG).show();
             } else {
@@ -220,7 +211,7 @@ public class LoginActivity extends AppCompatActivity {
                 login = gson.fromJson(response.body().charStream(), LoginResponse.class);
                 Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show();
                 save();
-                startActivity(intent);
+                startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
             } else if (response.code()==401){
                 loginm = gson.fromJson(response.body().charStream(), EmailError.class);
                 Toast.makeText(context, String.format("Failed: %s", loginm.error), Toast.LENGTH_LONG).show();

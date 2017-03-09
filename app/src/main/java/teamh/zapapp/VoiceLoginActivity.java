@@ -44,12 +44,10 @@ public class VoiceLoginActivity extends AppCompatActivity {
     private int color;
     private String filepath;
     private Context context;
-    private boolean recorded = false;
-    private Button btn_record, btn_verify;
+    private Button btn_verify;
     private SpeakerVerificationRestClient client;
     private Verification verify;
     private FileInputStream audio_file;
-    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,40 +66,28 @@ public class VoiceLoginActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS);
 
-        btn_record = (Button) findViewById(R.id.btn_record);
         btn_verify = (Button) findViewById(R.id.btn_verify);
 
-        btn_record.setOnClickListener(new View.OnClickListener() {
+        btn_verify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AndroidAudioRecorder.with(VoiceLoginActivity.this)
-                        // Required
                         .setFilePath(filepath)
                         .setColor(color)
                         .setRequestCode(0)
-                        // Optional
                         .setSource(AudioSource.MIC)
                         .setChannel(AudioChannel.MONO)
                         .setSampleRate(AudioSampleRate.HZ_16000)
                         .setAutoStart(true)
                         .setKeepDisplayOn(true)
-                        // Start recording
                         .record();
             }
         });
+    }
 
-        btn_verify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!recorded) {
-                    Toast.makeText(context, "Need Recording!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                new VoiceVerify().execute("");
-
-            }
-        });
-
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(VoiceLoginActivity.this, LoginActivity.class));
     }
 
     @Override
@@ -115,8 +101,8 @@ public class VoiceLoginActivity extends AppCompatActivity {
         }
         if (!(permissionToRecordAccepted && permissionToStoreAccepted) ){
             //go to the start of the login activity
-            Intent loginpageIntent = new Intent(VoiceLoginActivity.this, LoginActivity.class);
-            startActivity(loginpageIntent);
+            Toast.makeText(context, "Permissions not granted!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(VoiceLoginActivity.this, ProfileActivity.class));
         }
 
     }
@@ -126,12 +112,9 @@ public class VoiceLoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(context, "Recording Successfull!", Toast.LENGTH_SHORT).show();
-                recorded = true;
-                // Great! User has recorded and saved the audio file
+                new VoiceVerify().execute("");
             } else if (resultCode == RESULT_CANCELED) {
-                // Oops! User has canceled the recording
-                Toast.makeText(context, "Recording Cancelled!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Verification Cancelled!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -165,10 +148,10 @@ public class VoiceLoginActivity extends AppCompatActivity {
 
         protected void onPostExecute(Verification verify) {
             Toast.makeText(context, verify.result.toString() + " " + verify.confidence.toString(), Toast.LENGTH_LONG).show();
-            recorded = false;
             if (verify.result.toString() == "ACCEPT") {
-                intent = new Intent(VoiceLoginActivity.this, ProfileActivity.class);
-                startActivity(intent);
+                editor.putBoolean("loggedin", true);
+                editor.commit();
+                startActivity(new Intent(VoiceLoginActivity.this, ProfileActivity.class));
             }
         }
     }

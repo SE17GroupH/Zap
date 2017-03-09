@@ -35,7 +35,7 @@ public class AppFlowTests {
 
 
     @Rule
-    public ActivityTestRule<HompageActivity> mHomepageActivityTestRule = new ActivityTestRule<HompageActivity>(HompageActivity.class);
+    public ActivityTestRule<HomepageActivity> mHomepageActivityTestRule = new ActivityTestRule<HomepageActivity>(HomepageActivity.class);
 
     @Test
     public void basicValidAppFlow() throws Exception {

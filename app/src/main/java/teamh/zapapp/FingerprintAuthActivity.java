@@ -42,6 +42,11 @@ public class FingerprintAuthActivity extends AppCompatActivity implements Finger
     private KeyguardManager keyguardManager;
 
     @Override
+    public void onBackPressed() {
+        startActivity(new Intent(FingerprintAuthActivity.this, LoginActivity.class));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -184,10 +189,7 @@ public class FingerprintAuthActivity extends AppCompatActivity implements Finger
 
     @Override
     public void onAuthenticated() {
-        // Callback from FingerprintUiHelper. Let the activity know that authentication was
-        // successful.
-        Intent profileIntent = new Intent(FingerprintAuthActivity.this, ProfileActivity.class);
-        startActivity(profileIntent);
+        startActivity(new Intent(FingerprintAuthActivity.this, ProfileActivity.class));
     }
 
 }

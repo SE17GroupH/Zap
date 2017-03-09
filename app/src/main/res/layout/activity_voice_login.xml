@@ -21,15 +21,6 @@
         android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Record"
-        android:layout_margin="16sp"
-        android:background="#ff7e51c2"
-        android:textColor="#ffffffff"
-        android:id="@+id/btn_record"/>
-
-    <Button
         android:text="Verify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

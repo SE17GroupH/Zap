@@ -8,13 +8,21 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.google.gson.Gson;
+
 import java.io.IOException;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
+
 import static teamh.zapapp.ZapHelper.PREFS_NAME;
 
-public class MagiclinkLoginActivity extends AppCompatActivity {
+/**
+ * Created by sid on 3/8/17.
+ */
+
+public class ConfirmationActivity extends AppCompatActivity {
 
     //local variables
     private Context context;
@@ -22,12 +30,11 @@ public class MagiclinkLoginActivity extends AppCompatActivity {
     private String email, json_request;
     private LoginError logine;
     private SharedPreferences settings;
-    private SharedPreferences.Editor editor;
     private String auth_token;
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(MagiclinkLoginActivity.this, LoginActivity.class));
+        startActivity(new Intent(ConfirmationActivity.this, LoginActivity.class));
     }
 
     @Override
@@ -36,7 +43,6 @@ public class MagiclinkLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_magiclink_login);
         context = getApplicationContext();
         settings = getSharedPreferences(PREFS_NAME, 0);
-        editor = settings.edit();
 
         auth_token = getAuthToken(getIntent().getData().toString());
 
@@ -46,7 +52,7 @@ public class MagiclinkLoginActivity extends AppCompatActivity {
         else{
             email = settings.getString("email","");
             json_request = String.format("{\"authorization\":{\"email\":\"%s\",\"auth_token\":\"%s\"}}", email, auth_token);
-            new LoginMagic().execute(json_request);
+            new ConfirmationActivity.LoginMagic().execute(json_request);
         }
     }
 
@@ -59,7 +65,7 @@ public class MagiclinkLoginActivity extends AppCompatActivity {
     }
 
     //Background thread to execute Magic-Link Login API call
-    class LoginMagic extends AsyncTask<String, String, Response >{
+    class LoginMagic extends AsyncTask<String, String, Response > {
 
         protected Response doInBackground(String... strings) {
             String json_request = strings[0];
@@ -79,13 +85,12 @@ public class MagiclinkLoginActivity extends AppCompatActivity {
                 return;
             }
             if (response.isSuccessful()) {
-                editor.putBoolean("loggedin", true);
-                editor.commit();
-                startActivity(new Intent(MagiclinkLoginActivity.this, ProfileActivity.class));
+                Toast.makeText(context, "Success!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(ConfirmationActivity.this, ProfileActivity.class));
             } else {
                 logine = gson.fromJson(response.body().charStream(), LoginError.class);
                 Toast.makeText(context, String.format("Failed: %s", logine.errors), Toast.LENGTH_LONG).show();
-                startActivity(new Intent(MagiclinkLoginActivity.this, LoginActivity.class));
+                startActivity(new Intent(ConfirmationActivity.this, LoginActivity.class));
             }
         }
     }
