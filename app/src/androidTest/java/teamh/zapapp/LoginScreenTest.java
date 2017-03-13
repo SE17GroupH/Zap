@@ -47,7 +47,7 @@ public class LoginScreenTest {
             pressBack();
 
             onView(withId(R.id.button_login_voicedna)).perform(click());
-            assertEquals(VoicednaAuthActivity.class, getCurrentActivityClass());
+            assertEquals(VoicedRegisterActivity.class, getCurrentActivityClass());
         }
 
 

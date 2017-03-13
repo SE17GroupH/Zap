@@ -12,7 +12,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.microsoft.cognitive.speakerrecognition.SpeakerVerificationRestClient;
@@ -32,27 +34,30 @@ import cafe.adriel.androidaudiorecorder.model.AudioSource;
 
 import static teamh.zapapp.ZapHelper.PREFS_NAME;
 
-public class VoicednaAuthActivity extends AppCompatActivity {
+public class VoicedRegisterActivity extends AppCompatActivity {
 
-    //permission stuff
+    //permission variables
     private static final int REQUEST_PERMISSIONS = 200;
     private boolean permissionToRecordAccepted = false;
     private boolean permissionToStoreAccepted = false;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     //local variables
-    private String audio_filepath, audio_filepath1, audio_filepath2, audio_filepath3;
+    private String audio_filepath;
     private FileInputStream audio_file;
     private Context context;
     private SpeakerVerificationRestClient client;
-    private Button record, enroll, login;
+    private Button enroll;
     private CreateProfileResponse profile;
     private Enrollment enroll_obj;
     private int color;
     private int enrolled = 0;
-    private boolean recorded = false;
     private SharedPreferences settings;
     private SharedPreferences.Editor editor;
-    private Intent intent;
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(VoicedRegisterActivity.this, LoginActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,51 +73,34 @@ public class VoicednaAuthActivity extends AppCompatActivity {
         editor = settings.edit();
         audio_filepath = getFilesDir().getAbsolutePath() + "/audioSample.wav";
         color = getResources().getColor(R.color.colorPrimaryDark);
-        client = new SpeakerVerificationRestClient(BuildConfig.SPEAKER_RECOGNITION_API_KEY_1);
-        record = (Button) findViewById(R.id.btn_record);
         enroll = (Button) findViewById(R.id.btn_enroll);
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.phrases_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        //create profile async task
+        new CreateProfile().execute("");
 
         //request permissions
         ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS);
 
-        try {
-            profile = client.createProfile("en-us");
-            Toast.makeText(context, "Profile Created!", Toast.LENGTH_SHORT).show();
-        } catch (IOException | CreateProfileException e) {
-            Toast.makeText(context, "Error on Profile Creation!", Toast.LENGTH_LONG).show();
-        }
-
-        record.setOnClickListener(new View.OnClickListener() {
+        enroll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recorded = false;
-                AndroidAudioRecorder.with(VoicednaAuthActivity.this)
+                AndroidAudioRecorder.with(VoicedRegisterActivity.this)
                         // Required
                         .setFilePath(audio_filepath)
                         .setColor(color)
                         .setRequestCode(0)
-                        // Optional
                         .setSource(AudioSource.MIC)
                         .setChannel(AudioChannel.MONO)
                         .setSampleRate(AudioSampleRate.HZ_16000)
                         .setAutoStart(true)
                         .setKeepDisplayOn(true)
-                        // Start recording
                         .record();
-            }
-        });
-
-
-        enroll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!recorded) {
-                    Toast.makeText(context, "No recording!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                new VoiceEnroll().execute("");
-
             }
         });
     }
@@ -127,7 +115,10 @@ public class VoicednaAuthActivity extends AppCompatActivity {
                 permissionToStoreAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                 break;
         }
-        if (!(permissionToRecordAccepted && permissionToStoreAccepted) ) finish();
+        if (!(permissionToRecordAccepted && permissionToStoreAccepted) ) {
+            Toast.makeText(context, "Permissions not granted!", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
     }
 
@@ -136,12 +127,9 @@ public class VoicednaAuthActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(context, "Recording Successfull!", Toast.LENGTH_SHORT).show();
-                recorded=true;
-                // Great! User has recorded and saved the audio file
+                new VoiceEnroll().execute("");
             } else if (resultCode == RESULT_CANCELED) {
-                // Oops! User has canceled the recording
-                Toast.makeText(context, "Recording Cancelled!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Enrollment Cancelled!", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -169,7 +157,6 @@ public class VoicednaAuthActivity extends AppCompatActivity {
 
 
         protected void onPostExecute(Enrollment enroll_obj) {
-
             if(enroll_obj == null){
                 Toast.makeText(context, "Failed! Please try again", Toast.LENGTH_LONG).show();
                 return;
@@ -183,16 +170,25 @@ public class VoicednaAuthActivity extends AppCompatActivity {
             }
 
             if (enrolled == 3){
-                Toast.makeText(context, "Success: Registered for voice!", Toast.LENGTH_LONG).show();
                 editor.putString("voice_profileid",profile.verificationProfileId.toString());
                 editor.putBoolean("voice_registered",true);
                 editor.commit();
-                intent = new Intent(VoicednaAuthActivity.this, VoiceLoginActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(VoicedRegisterActivity.this, VoiceLoginActivity.class));
             }
+        }
+    }
 
-            recorded = false;
-
+    class CreateProfile extends AsyncTask<String, String, String > {
+        @Override
+        protected String doInBackground(String... params) {
+            client = new SpeakerVerificationRestClient(BuildConfig.SPEAKER_RECOGNITION_API_KEY_1);
+            try {
+                profile = client.createProfile("en-us");
+            } catch (IOException | CreateProfileException e) {
+                Toast.makeText(context, "Error on Profile Creation!", Toast.LENGTH_LONG).show();
+                finish();
+            }
+            return null;
         }
     }
 }

@@ -20,23 +20,11 @@
         android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
 
-    <TextView
-        android:text="Houston we have had a problem."
+    <Spinner
+        android:id="@+id/spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_margin="16sp"
-        android:textSize="28sp"
-        android:id="@+id/textView3"
-        android:textAppearance="@android:style/TextAppearance.Material.Headline" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Record"
-        android:layout_margin="16sp"
-        android:background="#ff7e51c2"
-        android:textColor="#ffffffff"
-        android:id="@+id/btn_record"/>
+        android:layout_height="wrap_content" />
 
     <Button
         android:text="Enroll"

@@ -25,3 +25,4 @@ An Android application showcasing 3 methods of authentication:
 - Save the 32 characters long key as an environment variable named API_KEY_1 
   - bash: `export API_KEY_1=abcd123abc123abc123abc123abc0000`
   - In Ubuntu/Linux systems, you can declare it in `/etc/environment` or `.bashrc` file.
+  - Run `./gradlew build`

@@ -12,7 +12,6 @@ import static teamh.zapapp.ZapHelper.PREFS_NAME;
  */
 
 public class LandingPage extends AppCompatActivity{
-    private Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,10 +20,9 @@ public class LandingPage extends AppCompatActivity{
         boolean loggedin = settings.getBoolean("loggedin", false);
 
         if (loggedin) {
-            intent = new Intent(LandingPage.this, ProfileActivity.class);
+            startActivity(new Intent(LandingPage.this, ProfileActivity.class));
         } else {
-            intent = new Intent(LandingPage.this, HompageActivity.class);
+            startActivity(new Intent(LandingPage.this, HomepageActivity.class));
         }
-        startActivity(intent);
     }
 }

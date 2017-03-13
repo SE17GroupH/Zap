@@ -11,4 +11,17 @@
     <string name="action_sign_in">SIGN IN</string>
     <string name="prompt_password">password (at least 6 chars)</string>
     <string name="prompt_email">email</string>
+    <string-array name="phrases_array">
+        <item>"Houston we have had a problem"</item>
+        <item>"My voice is my passport verify me"</item>
+        <item>"Apple juice tastes funny after toothpaste"</item>
+        <item>"You can get in without your password"</item>
+        <item>"You can activate security system now"</item>
+        <item>"My voice is stronger than passwords"</item>
+        <item>"My password is not your business"</item>
+        <item>"My name is unknown to you"</item>
+        <item>"Be yourself everyone else is already taken"</item>
+        <item>"I am going to make him an offer he cannot refuse"</item>
+    </string-array>
+
 </resources>

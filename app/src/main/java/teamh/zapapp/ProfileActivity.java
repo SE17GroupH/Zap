@@ -8,9 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Response;
+import android.widget.Toast;
 
 import static teamh.zapapp.ZapHelper.PREFS_NAME;
 
@@ -25,9 +23,6 @@ public class ProfileActivity extends AppCompatActivity{
     private SharedPreferences settings;
     private SharedPreferences.Editor editor;
     private String auth_token, url;
-    private Response response;
-    private final OkHttpClient client = new OkHttpClient();
-    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +33,6 @@ public class ProfileActivity extends AppCompatActivity{
         setContentView(R.layout.activity_profile);
         bt_Logout = (Button) findViewById(R.id.btn_logout);
         context = getApplicationContext();
-        intent = new Intent(ProfileActivity.this, LoginActivity.class);
         settings = getSharedPreferences(PREFS_NAME, 0);
         editor = settings.edit();
         auth_token = settings.getString("auth_token",null);
@@ -47,26 +41,36 @@ public class ProfileActivity extends AppCompatActivity{
         bt_Logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editor.putBoolean("loggedin", false);
-                editor.commit();
+
                 //logout api call
                 /*if(auth_token!=null){
                     try {
-                        response = ZapHelper.delete_zap(client, url);
+                        Response response = ZapHelper.delete_zap(new OkHttpClient(), url);
                         if(response.isSuccessful()){
-                            Toast.makeText(context, "LoggedOut!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "LoggedOut!", Toast.LENGTH_SHORT).show();
                         }
                     } catch (IOException e) {
                         Log.w("ZapApp","IOException");
                     }
                 }
                 */
-                startActivity(intent);
+
+                logout();
             }
         });
 
+    }
 
+    @Override
+    public void onBackPressed() {
+        logout();
+    }
 
+    public void logout(){
+        editor.putBoolean("loggedin", false);
+        editor.commit();
+        Toast.makeText(context, "LoggedOut!", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
     }
 }
 
