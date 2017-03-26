@@ -33,19 +33,6 @@
         <activity android:name=".ProfileActivity" />
         <activity android:name=".HomepageActivity" />
         <activity android:name=".VoiceLoginActivity" />
-        <activity android:name=".ConfirmationActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="http"
-                    android:host="zapserver.herokuapp.com"
-                    android:pathPrefix="/users/confirmation" />
-            </intent-filter>
-        </activity>
         <activity android:name=".MagiclinkLoginActivity"><!-- ATTENTION: This intent was auto-generated. Follow instructions at
   https://g.co/AppIndexing/AndroidStudio to publish your URLs. -->
             <intent-filter>
